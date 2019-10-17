@@ -9,5 +9,5 @@ with_nodejs = true
 with_yarn = false
 with_docker = true
 with_grifts = true
-as_web = true
-as_api = false
+as_web = false
+as_api = true
