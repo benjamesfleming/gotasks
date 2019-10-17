@@ -1,12 +1,8 @@
 ---
 development:
   dialect: "sqlite3"
-  database: /home/benfleming/go/src/github.com/benjamesfleming/gotasks_gotasks_development.sqlite
-
-test:
-  dialect: "sqlite3"
-  database: /home/benfleming/go/src/github.com/benjamesfleming/gotasks_gotasks_test.sqlite
+  database: "{{ env "PWD" }}/database.sqlite3"
 
 production:
   dialect: "sqlite3"
-  database: /home/benfleming/go/src/github.com/benjamesfleming/gotasks_gotasks_production.sqlite
+  database: "{{ env "PWD" }}/database.sqlite3"
