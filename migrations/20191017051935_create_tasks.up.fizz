@@ -1,0 +1,8 @@
+create_table("tasks") {
+	t.Column("id", "uuid", {"primary": true})
+    t.Column("user_id", "uuid", {})
+	t.Column("name", "string", {})
+	t.Column("created_at", "timestamp", {"default_raw": "CURRENT_TIMESTAMP"})
+	t.Column("updated_at", "timestamp", {"default_raw": "CURRENT_TIMESTAMP"})
+	t.ForeignKey("user_id", {"users": ["id"]}, {"on_delete": "cascade"})
+}
