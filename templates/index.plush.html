@@ -7,13 +7,16 @@
 
   <title>GoTasks</title>
 
-  <%= stylesheetTag("bundle.css") %>
-  <link rel="icon" href="<%= assetPath('images/favicon.ico') %>">
+  <%= stylesheetTag("main.css") %>
+  <link rel="icon" href="<%= assetPath("images/favicon.ico") %>">
+  <%= if (env("GO_ENV") == "development") { %>
+  <script src="http://localhost:35729/livereload.js"></script>
+  <% } %>
 </head>
 <body>
 
   <div id="app"></div>
   
-  <%= javascriptTag("bundle.js") %>
+  <%= javascriptTag("main.js") %>
 </body>
 </html>

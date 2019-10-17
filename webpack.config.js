@@ -12,7 +12,7 @@ module.exports = {
     './assets/scripts/index.js',
     './assets/styles/index.styl',
   ],
-  output: { filename: 'bundle.[hash].js', path: `${__dirname}/public/assets` },
+  output: { filename: '[name].[hash].js', path: `${__dirname}/public/assets` },
   resolve: {
     alias: {
       'svelte': path.resolve('node_modules', 'svelte'),
@@ -73,7 +73,7 @@ module.exports = {
       [{ from: './assets', to: '' }], { copyUnmodified: true, ignore: ['styles/**', 'scripts/**'] }
     ),
     new IgnoreEmitPlugin(/\.styl$/),
-    new MiniCssExtractPlugin({ filename: 'bundle.[contenthash].css' }),
+    new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' }),
     new ManifestPlugin({ fileName: 'manifest.json' }),
     new LiveReloadPlugin({}),
   ]
