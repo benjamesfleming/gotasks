@@ -2,3 +2,7 @@
   binary = "buffalo-pop"
   go_get = "github.com/gobuffalo/buffalo-pop"
   tags = ["sqlite"]
+
+[[plugin]]
+  binary = "buffalo-goth"
+  go_get = "github.com/gobuffalo/buffalo-goth@update-deps"

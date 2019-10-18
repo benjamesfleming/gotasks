@@ -2,7 +2,8 @@ create_table("users") {
 	t.Column("id", "uuid", {"primary": true})
 	t.Column("email", "string", {})
 	t.Column("username", "string", {})
-	t.Column("password", "string", {})
+	t.Column("password", "string", {"null": true})
+	t.Column("provider", "string", {"null": true})
 	t.Column("created_at", "timestamp", {"default_raw": "CURRENT_TIMESTAMP"})
 	t.Column("updated_at", "timestamp", {"default_raw": "CURRENT_TIMESTAMP"})
 }

@@ -96,14 +96,14 @@ func (v UsersResource) Create(c buffalo.Context) error {
 		return fmt.Errorf("no transaction found")
 	}
 
-	// // Bind the user to the context
-	// if err := c.Bind(user); err != nil {
-	// 	return err
-	// }
+	// Bind the user to the context
+	user := &models.User{}
+	if err := c.Bind(user); err != nil {
+		return err
+	}
 
 	// Validate the created user
 	// if there are any unknown errors then break
-	user := &models.User{}
 	verrs, err := tx.ValidateAndCreate(user)
 	if err != nil {
 		return err
@@ -146,10 +146,10 @@ func (v UsersResource) Update(c buffalo.Context) error {
 		return c.Error(404, err)
 	}
 
-	// // Bind the user to the context
-	// if err := c.Bind(user); err != nil {
-	// 	return err
-	// }
+	// Bind the user to the context
+	if err := c.Bind(user); err != nil {
+		return err
+	}
 
 	// Validate the updated user
 	// if there are any unknown errors then break

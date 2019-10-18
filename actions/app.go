@@ -3,11 +3,11 @@ package actions
 import (
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/envy"
-	paramlogger "github.com/gobuffalo/mw-paramlogger"
 
 	"github.com/benjamesfleming/gotasks/models"
 	"github.com/gobuffalo/buffalo-pop/pop/popmw"
-	csrf "github.com/gobuffalo/mw-csrf"
+
+	"github.com/markbates/goth/gothic"
 )
 
 // ENV is used to help switch settings based on where the
@@ -33,18 +33,10 @@ func App() *buffalo.App {
 		app = buffalo.New(buffalo.Options{
 			Env:         ENV,
 			SessionName: "_gotasks_session",
+			// SessionStore: sessions.Null{},
 		})
 
-		// Log request parameters (filters apply).
-		app.Use(paramlogger.ParameterLogger)
-
-		// Protect against CSRF attacks. https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)
-		// Remove to disable this.
-		app.Use(csrf.New)
-
-		// Wraps each request in a transaction.
-		//  c.Value("tx").(*pop.Connection)
-		// Remove to disable this.
+		// Add the database to the context
 		app.Use(popmw.Transaction(models.DB))
 
 		// Add the application routes.
@@ -52,6 +44,9 @@ func App() *buffalo.App {
 		app.GET("/", HomeHandler)
 		app.Resource("/api/tasks", TasksResource{})
 		app.Resource("/api/users", UsersResource{})
+		auth := app.Group("/auth")
+		auth.GET("/{provider}", buffalo.WrapHandlerFunc(gothic.BeginAuthHandler))
+		auth.GET("/{provider}/callback", AuthCallback)
 		app.ServeFiles("/", RenderOptions.AssetsBox)
 	}
 
