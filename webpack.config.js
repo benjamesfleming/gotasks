@@ -6,11 +6,14 @@ const LiveReloadPlugin = require('webpack-livereload-plugin');
 const IgnoreEmitPlugin = require('ignore-emit-webpack-plugin');
 const path = require('path');
  
+const APP_ENV = process.env.NODE_ENV || 'development';
+
 module.exports = {
-  mode: process.env.NODE_ENV || 'development',
+  mode: APP_ENV,
+  // devtool: APP_ENV == 'producation' ? false: 'source-map',
   entry: [
     './assets/scripts/index.js',
-    './assets/styles/index.styl',
+    './assets/styles/index.scss',
   ],
   output: { filename: '[name].[hash].js', path: `${__dirname}/public/assets` },
   resolve: {
@@ -18,35 +21,57 @@ module.exports = {
       'svelte': path.resolve('node_modules', 'svelte'),
       '~': path.resolve('assets', 'scripts'),
     },
-    extensions: ['.styl', '.js', '.svelte'],
+    extensions: ['.scss', '.mjs', '.js', '.svelte'],
     mainFields: ['svelte', 'browser', 'module', 'main']
   },
   module: {
     rules: [
 
       /*
-      ███████╗████████╗██╗   ██╗██╗     ██╗   ██╗███████╗
-      ██╔════╝╚══██╔══╝╚██╗ ██╔╝██║     ██║   ██║██╔════╝
-      ███████╗   ██║    ╚████╔╝ ██║     ██║   ██║███████╗
-      ╚════██║   ██║     ╚██╔╝  ██║     ██║   ██║╚════██║
-      ███████║   ██║      ██║   ███████╗╚██████╔╝███████║
-      ╚══════╝   ╚═╝      ╚═╝   ╚══════╝ ╚═════╝ ╚══════╝
+      ███████╗ █████╗ ███████╗███████╗
+      ██╔════╝██╔══██╗██╔════╝██╔════╝
+      ███████╗███████║███████╗███████╗
+      ╚════██║██╔══██║╚════██║╚════██║
+      ███████║██║  ██║███████║███████║
+      ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝
 
       */
 
       {
-        test: /\.styl$/,
+        test: /\.s[ac]ss$/,
         exclude: /node_modules/,
         use: [
           { loader: MiniCssExtractPlugin.loader },
           { loader: 'css-loader' },
-          {
-            loader: 'stylus-loader',
-            options: {
-              paths: 'node_modules/bootstrap-stylus/stylus/'
-            }
-          }
+          { loader: 'sass-loader' },
         ]
+      },
+
+      {
+        test: /\.css$/,
+        exclude: /node_modules/,
+        use: [
+          { loader: MiniCssExtractPlugin.loader },
+          { loader: 'css-loader' },
+        ]
+      },
+
+      /*
+      ███████╗ ██████╗██████╗ ██╗██████╗ ████████╗███████╗
+      ██╔════╝██╔════╝██╔══██╗██║██╔══██╗╚══██╔══╝██╔════╝
+      ███████╗██║     ██████╔╝██║██████╔╝   ██║   ███████╗
+      ╚════██║██║     ██╔══██╗██║██╔═══╝    ██║   ╚════██║
+      ███████║╚██████╗██║  ██║██║██║        ██║   ███████║
+      ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝        ╚═╝   ╚══════╝
+
+      */
+
+      {
+        test: /\.m?js$/,
+        exclude: /node_modules/,
+        use: [
+          { loader: 'babel-loader' },
+        ],
       },
 
       /*
@@ -60,9 +85,17 @@ module.exports = {
       */
 
       {
-        test: /\.(html|svelte)$/,
+        test: /\.svelte$/,
         exclude: /node_modules/,
-        use: ['svelte-loader']
+        use: [
+          { 
+            loader: 'svelte-loader',
+            options: {
+              ...require('./svelte.config.js'),
+              emitCss: true,
+            }
+          },
+        ]
       },
 
     ]
