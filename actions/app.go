@@ -41,12 +41,16 @@ func App() *buffalo.App {
 
 		// Add the application routes.
 		// https://gobuffalo.io/en/docs/routing/
-		app.GET("/", HomeHandler)
 		app.Resource("/api/tasks", TasksResource{})
 		app.Resource("/api/users", UsersResource{})
+
+		// Auth routes
 		auth := app.Group("/auth")
 		auth.GET("/{provider}", buffalo.WrapHandlerFunc(gothic.BeginAuthHandler))
 		auth.GET("/{provider}/callback", AuthCallback)
+
+		// Misc routes
+		app.GET("/", HomeHandler)
 		app.ServeFiles("/", RenderOptions.AssetsBox)
 	}
 
