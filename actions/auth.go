@@ -3,32 +3,17 @@ package actions
 import (
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/benjamesfleming/gotasks/models"
-	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/benjamesfleming/gotasks/utils/jwt"
+
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
-	"github.com/gofrs/uuid"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/github"
 	"github.com/markbates/goth/providers/google"
 )
-
-var jwtKey = []byte(os.Getenv("SESSION_SECRET"))
-var jwtMethod = jwt.SigningMethodHS256
-
-var jwtAccessTTL = 5 * time.Minute
-var jwtRefreshTTL = 24 * time.Hour * 7
-
-// Claims ...
-// The claims in a given jwt token
-type Claims struct {
-	ID    uuid.UUID `json:"id"`
-	Email string    `json:"email"`
-	jwt.StandardClaims
-}
 
 func init() {
 	gothic.Store = App().SessionStore
@@ -82,24 +67,10 @@ func AuthCallback(c buffalo.Context) error {
 		}
 	}
 
-	// Generate the JWT tokens
-	refreshClaims := jwt.StandardClaims{ExpiresAt: time.Now().Add(jwtRefreshTTL).Unix()}
-	accessClaims := &Claims{
-		ID:    user.ID,
-		Email: user.Email,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(jwtAccessTTL).Unix(),
-		},
-	}
-	refreshToken, err := jwt.NewWithClaims(jwtMethod, refreshClaims).SignedString(jwtKey)
-	accessToken, err := jwt.NewWithClaims(jwtMethod, accessClaims).SignedString(jwtKey)
-
-	// Check for JWT errors
-	if err != nil {
-		return fmt.Errorf("failed to generate tokens")
-	}
+	// Generate a new JWT token pair
+	tkns, _ := jwt.GenerateTokens(user)
 
 	// Redirect the user to the clientside
 	// to complete the signup process
-	return c.Redirect(301, fmt.Sprintf("/#/auth/complete?access_token=%s&refresh_token=%s", accessToken, refreshToken))
+	return c.Redirect(301, fmt.Sprintf("/#/auth/complete?access_token=%s&refresh_token=%s", tkns.AccessToken, tkns.RefreshToken))
 }
