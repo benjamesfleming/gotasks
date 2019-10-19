@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/benjamesfleming/gotasks/models"
+	ACL "github.com/benjamesfleming/gotasks/utils/policies"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
 )
@@ -26,6 +27,11 @@ type UsersResource struct {
 // List gets all Users.
 // GET /api/users
 func (v UsersResource) List(c buffalo.Context) error {
+	canList, _ := ACL.NewUsersPolicy(c).CanList()
+	if !canList {
+		return c.Render(401, r.JSON(""))
+	}
+
 	// Grab the database connection from the current context
 	// else return error and break
 	tx, ok := c.Value("tx").(*pop.Connection)
