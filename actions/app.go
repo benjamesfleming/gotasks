@@ -52,6 +52,12 @@ func App() *buffalo.App {
 		// Misc routes
 		app.GET("/", HomeHandler)
 		app.ServeFiles("/", RenderOptions.AssetsBox)
+
+		// Error handling
+		app.ErrorHandlers[404] = func(status int, err error, c buffalo.Context) error {
+			c.Redirect(301, "/#/"+c.Request().RequestURI)
+			return nil
+		}
 	}
 
 	return app
