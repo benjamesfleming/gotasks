@@ -8,7 +8,11 @@
     "build": "webpack -p --progress"
   },
   "repository": "github.com/benjamesfleming/gotasks",
-  "dependencies": {},
+  "dependencies": {
+    "qs": "^6.9.0",
+    "svelte-spa-chunk": "^1.0.1",
+    "svelte-spa-router": "^1.2.1"
+  },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.6.4",

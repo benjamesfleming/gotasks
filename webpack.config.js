@@ -86,8 +86,9 @@ module.exports = {
 
       {
         test: /\.svelte$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
         use: [
+          { loader: 'babel-loader' },
           { 
             loader: 'svelte-loader',
             options: {
