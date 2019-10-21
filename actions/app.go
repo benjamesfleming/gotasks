@@ -46,6 +46,7 @@ func App() *buffalo.App {
 
 		// Auth routes
 		auth := app.Group("/auth")
+		auth.GET("/refresh", RefreshToken)
 		auth.GET("/{provider}", buffalo.WrapHandlerFunc(gothic.BeginAuthHandler))
 		auth.GET("/{provider}/callback", AuthCallback)
 

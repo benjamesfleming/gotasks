@@ -3,6 +3,7 @@ package jwt
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/benjamesfleming/gotasks/models"
@@ -23,12 +24,12 @@ type TokenPair struct {
 	AccessToken  string `json:"access_token"`
 }
 
-// GenerateTokens generate a new token pair
-func GenerateTokens(u *models.User) (*TokenPair, error) {
-	refreshClaims := jwt.StandardClaims{ExpiresAt: time.Now().Add(jwtRefreshTTL).Unix()}
+// GenerateTokenPair generate a new token pair
+func GenerateTokenPair(u *models.User) (*TokenPair, error) {
+	refreshClaims := jwt.StandardClaims{Id: u.ID.String(), ExpiresAt: time.Now().Add(jwtRefreshTTL).Unix()}
 	accessClaims := &Claims{
-		ID:    u.ID,
-		Roles: u.Roles,
+		Id:         u.ID.String(),
+		Privileges: strings.Fields(u.Privileges),
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(jwtAccessTTL).Unix(),
 		},
@@ -47,23 +48,63 @@ func GenerateTokens(u *models.User) (*TokenPair, error) {
 	}, nil
 }
 
-// ValidateToken validtes the token in the request and
-// returns the embed claims
-func ValidateToken(c buffalo.Context) (*Claims, error) {
-	claims := &Claims{}
+// ValidateToken ...
+func ValidateToken(c buffalo.Context) (*jwt.Token, error) {
+	// Get the user provided token
+	tknString, err := TokenFromHeader(c)
+	if err != nil {
+		return &jwt.Token{}, fmt.Errorf("bad request")
+	}
 
-	tnkString := c.Request().Header.Get("Authentication")
-	tkn, err := jwt.ParseWithClaims(tnkString, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtKey, nil
-	})
+	// Parse and return the token
+	return jwt.Parse(
+		tknString,
+		func(token *jwt.Token) (interface{}, error) {
+			return jwtKey, nil
+		},
+	)
+}
+
+// ClaimsFromHeader validtes the token in the request and
+// returns the embeded claims
+func ClaimsFromHeader(c buffalo.Context) (*Claims, error) {
+	var claims = new(Claims)
+
+	// Get the user provided token
+	tknString, err := TokenFromHeader(c)
+	if err != nil {
+		return &Claims{}, fmt.Errorf("bad request")
+	}
+
+	// Validate the token
+	tkn, err := jwt.ParseWithClaims(
+		tknString, claims,
+		func(token *jwt.Token) (interface{}, error) {
+			return jwtKey, nil
+		},
+	)
 
 	if err != nil {
-		return nil, fmt.Errorf("bad request")
+		return &Claims{}, fmt.Errorf("bad request")
 	}
 
 	if !tkn.Valid {
-		return nil, fmt.Errorf("token invalid")
+		return &Claims{}, fmt.Errorf("token invalid")
 	}
 
 	return claims, nil
+}
+
+// TokenFromHeader gets a jwt token in the form of
+// Authorization: Bearer <jwt-token>
+func TokenFromHeader(c buffalo.Context) (string, error) {
+	tknString := c.Request().Header.Get("Authorization")
+	splitToken := strings.Split(tknString, "Bearer")
+
+	if len(splitToken) != 2 {
+		return "", fmt.Errorf("bad request")
+	}
+
+	reqToken := strings.TrimSpace(splitToken[1])
+	return reqToken, nil
 }

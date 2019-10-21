@@ -10,7 +10,6 @@ import (
 	"github.com/gobuffalo/pop"
 	"github.com/gobuffalo/validate"
 	"github.com/gofrs/uuid"
-	"golang.org/x/crypto/bcrypt"
 )
 
 /*
@@ -29,9 +28,10 @@ type User struct {
 	ID           uuid.UUID `json:"id" db:"id"`
 	Email        string    `json:"email" db:"email"`
 	UserName     string    `json:"username" db:"username"`
-	PasswordHash string    `json:"-" db:"password"`
+	PasswordHash string    `json:"-" db:"-"`
 	Password     string    `json:"-" db:"-"`
 	Provider     string    `json:"provider" db:"provider"`
+	Privileges   string    `json:"privileges" db:"privileges"`
 	CreatedAt    time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at" db:"updated_at"`
 }
@@ -53,12 +53,12 @@ type Users []User
 // Create wraps up the pattern of encrypting the password and
 // running validations. Useful when writing tests.
 func (u *User) Create(tx *pop.Connection) (*validate.Errors, error) {
-	ph, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return validate.NewErrors(), err
-	}
+	// ph, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	// if err != nil {
+	// 	return validate.NewErrors(), err
+	// }
 	u.Email = strings.ToLower(u.Email)
-	u.PasswordHash = string(ph)
+	// u.PasswordHash = string(ph)
 	return tx.ValidateAndCreate(u)
 }
 

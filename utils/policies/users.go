@@ -14,7 +14,7 @@ type UsersPolicy struct {
 
 // NewUsersPolicy returns a policy based on the given context
 func NewUsersPolicy(c buffalo.Context) *UsersPolicy {
-	claims, _ := jwt.ValidateToken(c)
+	claims, _ := jwt.ClaimsFromHeader(c)
 	return &UsersPolicy{
 		Context: &c,
 		Claims:  claims,
@@ -22,6 +22,10 @@ func NewUsersPolicy(c buffalo.Context) *UsersPolicy {
 }
 
 // CanList validtes if the current user is allowed to list all the users
-func (p *UsersPolicy) CanList() (bool, error) {
-	return p.Claims.HasRole(`iam:gotasks:users:\*:list`), nil
+func (p *UsersPolicy) CanList() bool {
+	if v := p.Claims.NewValidator(); v != nil {
+		v.HasPrivilege(`iam:gotasks:users:\*:list`)
+		return v.Execute()
+	}
+	return false
 }

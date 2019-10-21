@@ -1,28 +1,52 @@
 package jwt
 
 import (
+	"fmt"
 	"regexp"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/gobuffalo/pop/slices"
-	"github.com/gofrs/uuid"
 )
 
 // Claims ...
 // The claims in a given jwt token
 type Claims struct {
-	ID    uuid.UUID     `json:"id"`
-	Roles slices.String `json:"roles"`
+	Id         string   `json:"id"`
+	Privileges []string `json:"privileges"`
 	jwt.StandardClaims
 }
 
-// HasRole checks if the current claims contain a role
-func (c *Claims) HasRole(rexp string) bool {
-	pattern := regexp.MustCompile(rexp)
-	for _, role := range c.Roles {
-		if ok := pattern.MatchString(role); ok {
-			return true
-		}
+// ClaimsValidator ...
+// A validator used to check a policy
+type ClaimsValidator struct {
+	Claims   *Claims
+	Required []string
+}
+
+// NewValidator contructs a new claims validator
+func (c *Claims) NewValidator() *ClaimsValidator {
+	return &ClaimsValidator{
+		Required: []string{},
+		Claims:   c,
 	}
-	return false
+}
+
+// HasPrivilege checks if the current claims contain a privilege
+func (c *ClaimsValidator) HasPrivilege(rexp string) {
+	c.Required = append(c.Required, rexp)
+}
+
+// Execute runs the validator and checks for all required privileges
+func (c *ClaimsValidator) Execute() bool {
+RequiredLoop:
+	for _, rexp := range c.Required {
+		pattern := regexp.MustCompile(rexp)
+		for _, privilege := range c.Claims.Privileges {
+			fmt.Println("Checking Required Claim [" + rexp + "] Equals Current Privilege [" + privilege + "]")
+			if ok := pattern.MatchString(privilege); ok {
+				continue RequiredLoop
+			}
+		}
+		return false
+	}
+	return true
 }

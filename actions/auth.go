@@ -53,6 +53,9 @@ func AuthCallback(c buffalo.Context) error {
 		user.UserName = data.Name
 		user.Provider = data.Provider
 		user.Email = data.Email
+		user.Privileges = strings.Join(
+			[]string{""}, "\n",
+		)
 
 		// Validate the user data
 		// if there are any unknown errors then break
@@ -69,9 +72,42 @@ func AuthCallback(c buffalo.Context) error {
 	}
 
 	// Generate a new JWT token pair
-	tkns, _ := jwt.GenerateTokens(user)
+	tkns, _ := jwt.GenerateTokenPair(user)
 
 	// Redirect the user to the clientside
 	// to complete the signup process
 	return c.Redirect(301, fmt.Sprintf("/#/auth/complete?access_token=%s&refresh_token=%s", tkns.AccessToken, tkns.RefreshToken))
+}
+
+// RefreshToken ...
+func RefreshToken(c buffalo.Context) error {
+	claims, err := jwt.ClaimsFromHeader(c)
+	if err != nil {
+		return c.Render(400, r.String("invalid token or malformed request"))
+	}
+
+	// Grab the database connection from the current context
+	// else return error and break
+	tx, ok := c.Value("tx").(*pop.Connection)
+	if !ok {
+		return c.Render(500, r.String("server failed to connect to database"))
+	}
+
+	// Grab the user from the database
+	user := new(models.User)
+	if err := tx.Where("id = ?", claims.StandardClaims.Id).First(user); err != nil {
+		fmt.Println(err)
+		return c.Render(500, r.String("server failed to query database"))
+	}
+
+	// Generate a new JWT token pair
+	tkns, _ := jwt.GenerateTokenPair(user)
+	data := struct {
+		AccessToken string `json:"access_token"`
+	}{
+		tkns.AccessToken,
+	}
+
+	// Return the access token to the user
+	return c.Render(200, r.JSON(data))
 }
