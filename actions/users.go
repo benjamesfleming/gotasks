@@ -27,28 +27,24 @@ type UsersResource struct {
 // List gets all Users.
 // GET /api/users
 func (v UsersResource) List(c buffalo.Context) error {
-	canList, _ := ACL.NewUsersPolicy(c).CanList()
-	if !canList {
-		return c.Render(401, r.JSON(""))
-	}
-
+	if ACL.NewUsersPolicy(c).CanList() {
 	// Grab the database connection from the current context
 	// else return error and break
 	tx, ok := c.Value("tx").(*pop.Connection)
 	if !ok {
-		return fmt.Errorf("no transaction found")
+			return c.Render(500, r.String("internal server error, please contact the admin"))
 	}
 
 	// Get all the users from the database
 	// paginate with `page=?`, `per_page=?` params
 	users := &models.Users{}
-	err := tx.PaginateFromParams(c.Params()).All(users)
-	if err != nil {
-		return err
+		if tx.PaginateFromParams(c.Params()).All(users) != nil {
+			return c.Render(500, r.String("internal server error, please contact the admin"))
 	}
 
-	// Return the list of users
 	return c.Render(200, r.JSON(users))
+}
+	return c.Render(401, r.String("you are unauthorized to access this resource"))
 }
 
 /*

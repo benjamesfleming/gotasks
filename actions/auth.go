@@ -44,7 +44,8 @@ func AuthCallback(c buffalo.Context) error {
 	// Check if the user is already signed up
 	user := new(models.User)
 	if err := tx.Where("email = ?", data.Email).First(user); err != nil {
-		return fmt.Errorf("[ERROR]failed to query database: \n\n%s", err)
+		fmt.Println(err)
+		return c.Render(500, r.String("server failed to query database"))
 	}
 
 	if user == nil {
