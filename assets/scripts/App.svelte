@@ -1,9 +1,8 @@
 <script>
-    export let name;
+    import Router from 'svelte-spa-router'
+    import Navigation from '~/components/Navigation'
+    import routes from '~/utils/routes'
 </script>
 
-<style lang="scss">
-
-</style>
-
-<h1>Hello {name}!</h1>
+<Navigation />
+<Router {routes}/>
