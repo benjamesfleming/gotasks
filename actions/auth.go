@@ -1,8 +1,10 @@
 package actions
 
 import (
+	"encoding/binary"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/benjamesfleming/gotasks/models"
 	"github.com/benjamesfleming/gotasks/utils/jwt"
@@ -48,7 +50,7 @@ func AuthCallback(c buffalo.Context) error {
 		return c.Render(500, r.String("server failed to query database"))
 	}
 
-	if user == nil {
+	if binary.BigEndian.Uint64(user.ID.Bytes()) == 0 {
 		// Map the providers data to a User model
 		user.UserName = data.Name
 		user.Provider = data.Provider
