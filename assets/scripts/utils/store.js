@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable } from 'svelte/store'
 
 /**
  * Create Writable Store
@@ -7,7 +7,7 @@ import { writable } from 'svelte/store';
  * @param {*} key 
  * @param {*} startValue 
  */
-export const createWritableStore = (key, startValue) => {
+export function createWritableStore (key, startValue) {
     const { subscribe, set } = writable(startValue)
   
 	return {
@@ -20,7 +20,7 @@ export const createWritableStore = (key, startValue) => {
             
             subscribe(current => {
                 const data = JSON.stringify({ data: current })
-                current != null
+                current != null && current != ''
                     ? localStorage.setItem(key, data)
                     : localStorage.removeItem(key)
             })
@@ -35,11 +35,14 @@ export const createWritableStore = (key, startValue) => {
  * subscribe to a store and return the current value
  * @param {*} store 
  */
-export const getStoreValue = async (store) => {
-    return new Promise(done => {
-        console.log(store)
-        let unsub = store.subscribe(
-            tkn => { done(tkn); unsub() }
-        )
-    })
+export async function getStoreValue (store) {
+    let unsub = () => {}
+    let value = await new Promise(
+        done => {
+            unsub = store.subscribe(
+                tkn => done(tkn)
+            )
+        }
+    )
+    unsub(); return value
 }

@@ -1,8 +1,22 @@
 <script>
+import { replace } from 'svelte-spa-router'
 import { getData } from '~/utils/fetch'
+import { onAuthorized } from '~/utils/auth'
+
+let allUsers = []
+
+onAuthorized(
+    ['iam:gotasks:users:*:list'],
+    {
+        onFailure () { replace('/') },
+        onSuccess () {
+            allUsers = getData('/api/users')
+        }
+    }
+)
 </script>
 
-{#await getData('/api/users') then users}
+{#await allUsers then users}
     <table>
         <thead>
             <tr>

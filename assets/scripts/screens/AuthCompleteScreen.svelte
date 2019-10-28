@@ -10,7 +10,7 @@ $: {
     }
 
     login({ access_token, refresh_token })
-    replace('/admin')
+    replace('/dashboard')
 }
 </script>
 

@@ -5,7 +5,7 @@ import { AccessToken, RefreshToken } from '~/utils/auth'
  * Get Headers
  * build a object with the default headers
  */
-const getHeaders = async () => {
+async function getHeaders () {
     const authToken = await getStoreValue(AccessToken)
     return {
         Authorization: 'Bearer ' + authToken
@@ -16,7 +16,7 @@ const getHeaders = async () => {
  * Refresh Token
  * atempt to refresh the access token
  */
-const updateAccessToken = async (options)  => {
+export async function updateAccessToken (options) {
     const authToken = await getStoreValue(RefreshToken)
     const headers = {
         Authorization: 'Bearer ' + authToken
@@ -38,7 +38,7 @@ const updateAccessToken = async (options)  => {
  * @param {*} uri 
  * @param {*} options 
  */
-export const getData = async (uri, { retry = true, ...options } = {}) => {
+export async function getData (uri, { retry = true, ...options } = {}) {
     const headers = await getHeaders()
     const response = await fetch(
         uri, { headers, ...options }

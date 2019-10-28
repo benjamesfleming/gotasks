@@ -1,6 +1,6 @@
-import App from "~/App";
+import App from '~/App';
 
-const target = document.querySelector("#app");
+const target = document.querySelector('#app');
 const app = new App(
     { target, props: { } }
 );
