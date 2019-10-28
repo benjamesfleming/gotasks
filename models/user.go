@@ -2,12 +2,15 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"regexp"
 	"strings"
 	"time"
 
 	"github.com/gobuffalo/validate/validators"
 
 	"github.com/gobuffalo/pop"
+	"github.com/gobuffalo/pop/slices"
 	"github.com/gobuffalo/validate"
 	"github.com/gofrs/uuid"
 )
@@ -31,7 +34,7 @@ type User struct {
 	PasswordHash string    `json:"-" db:"-"`
 	Password     string    `json:"-" db:"-"`
 	Provider     string    `json:"provider" db:"provider"`
-	Privileges   string    `json:"privileges" db:"privileges"`
+	Privileges   slices.String    `json:"privileges" db:"privileges"`
 	CreatedAt    time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at" db:"updated_at"`
 }
@@ -116,4 +119,50 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 			},
 		},
 	), err
+}
+
+/*
+ ██████╗██╗      █████╗ ██╗███╗   ███╗███████╗
+██╔════╝██║     ██╔══██╗██║████╗ ████║██╔════╝
+██║     ██║     ███████║██║██╔████╔██║███████╗
+██║     ██║     ██╔══██║██║██║╚██╔╝██║╚════██║
+╚██████╗███████╗██║  ██║██║██║ ╚═╝ ██║███████║
+ ╚═════╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝     ╚═╝╚══════╝
+
+*/
+
+// ClaimsValidator ...
+// A validator used to check a policy
+type ClaimsValidator struct {
+	Required []string
+	User     *User
+}
+
+// NewValidator contructs a new claims validator
+func (u *User) NewValidator() *ClaimsValidator {
+	return &ClaimsValidator{
+		Required: []string{},
+		User:     u,
+	}
+}
+
+// HasPrivilege checks if the current claims contain a privilege
+func (c *ClaimsValidator) HasPrivilege(rexp string) {
+	c.Required = append(c.Required, rexp)
+}
+
+// Execute runs the validator and checks for all required privileges
+func (c *ClaimsValidator) Execute() bool {
+RequiredLoop:
+	for _, rexp := range c.Required {
+		pattern := regexp.MustCompile(rexp)
+		for _, privilege := range c.User.Privileges {
+			fmt.Println("Checking Required Claim [" + rexp + "] Equals Current Privilege [" + privilege + "]")
+			if ok := pattern.MatchString(privilege); ok {
+				continue RequiredLoop
+			}
+		}
+		return false
+	}
+	return true
 }

@@ -28,22 +28,22 @@ type UsersResource struct {
 // GET /api/users
 func (v UsersResource) List(c buffalo.Context) error {
 	if ACL.NewUsersPolicy(c).CanList() {
-	// Grab the database connection from the current context
-	// else return error and break
-	tx, ok := c.Value("tx").(*pop.Connection)
-	if !ok {
+		// Grab the database connection from the current context
+		// else return error and break
+		tx, ok := c.Value("tx").(*pop.Connection)
+		if !ok {
 			return c.Render(500, r.String("internal server error, please contact the admin"))
-	}
+		}
 
-	// Get all the users from the database
-	// paginate with `page=?`, `per_page=?` params
-	users := &models.Users{}
+		// Get all the users from the database
+		// paginate with `page=?`, `per_page=?` params
+		users := &models.Users{}
 		if tx.PaginateFromParams(c.Params()).All(users) != nil {
 			return c.Render(500, r.String("internal server error, please contact the admin"))
-	}
+		}
 
-	return c.Render(200, r.JSON(users))
-}
+		return c.Render(200, r.JSON(users))
+	}
 	return c.Render(401, r.String("you are unauthorized to access this resource"))
 }
 
@@ -60,22 +60,26 @@ func (v UsersResource) List(c buffalo.Context) error {
 // Show gets the data for one User.
 // GET /api/users/{user_id}
 func (v UsersResource) Show(c buffalo.Context) error {
-	// Grab the database connection from the current context
-	// else return error and break
-	tx, ok := c.Value("tx").(*pop.Connection)
-	if !ok {
-		return fmt.Errorf("no transaction found")
-	}
+	id := c.Param("user_id")
+	if ACL.NewUsersPolicy(c).CanShow(id) {
+		// Grab the database connection from the current context
+		// else return error and break
+		tx, ok := c.Value("tx").(*pop.Connection)
+		if !ok {
+			return c.Render(500, r.String("internal server error, please contact the admin"))
+		}
 
-	// Attempt to find the user with the given user_id
-	// else return 404 not found
-	user := &models.User{}
-	if err := tx.Find(user, c.Param("user_id")); err != nil {
-		return c.Error(404, err)
-	}
+		// Attempt to find the user with the given user_id
+		// else return 404 not found
+		user := &models.User{}
+		if err := tx.Find(user, id); err != nil {
+			return c.Error(404, err)
+		}
 
-	// Return the requested user
-	return c.Render(200, r.JSON(user))
+		// Return the requested user
+		return c.Render(200, r.JSON(user))
+	}
+	return c.Render(401, r.String("you are unauthorized to access this resource"))
 }
 
 /*

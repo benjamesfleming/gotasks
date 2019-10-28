@@ -22,6 +22,7 @@ require (
 	github.com/gobuffalo/validate v2.0.3+incompatible
 	github.com/gobuffalo/x v0.0.0-20190224155809-6bb134105960
 	github.com/gofrs/uuid v3.2.0+incompatible
+	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v1.2.0
 	github.com/karrick/godirwalk v1.12.0 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect

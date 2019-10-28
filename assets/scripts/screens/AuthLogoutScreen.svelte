@@ -1,9 +1,8 @@
 <script>
-import { replace } from 'svelte-spa-router'
-import { logout } from '~/utils/auth'
+import { UserObject } from '~/utils/auth'
 
-logout()
-replace('/')
+UserObject.set(null)
+window.location.href = '/auth/logout'
 </script>
 
 <p>Sorry to see you go.</p>

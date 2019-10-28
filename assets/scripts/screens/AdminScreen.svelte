@@ -8,7 +8,7 @@ let allUsers = []
 onAuthorized(
     ['iam:gotasks:users:*:list'],
     {
-        onFailure () { replace('/') },
+        onFailure () { replace('/dashboard') },
         onSuccess () {
             allUsers = getData('/api/users')
         }

@@ -4,6 +4,7 @@ import (
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/envy"
 
+	"github.com/benjamesfleming/gotasks/middleware"
 	"github.com/benjamesfleming/gotasks/models"
 	"github.com/gobuffalo/buffalo-pop/pop/popmw"
 
@@ -41,12 +42,14 @@ func App() *buffalo.App {
 
 		// Add the application routes.
 		// https://gobuffalo.io/en/docs/routing/
-		app.Resource("/api/tasks", TasksResource{})
-		app.Resource("/api/users", UsersResource{})
+		api := app.Group("/api")
+		api.Use(middleware.AuthMiddleware)
+		api.Resource("/tasks", TasksResource{})
+		api.Resource("/users", UsersResource{})
 
 		// Auth routes
 		auth := app.Group("/auth")
-		auth.GET("/refresh", RefreshToken)
+		auth.GET("/logout", AuthLogout)
 		auth.GET("/{provider}", buffalo.WrapHandlerFunc(gothic.BeginAuthHandler))
 		auth.GET("/{provider}/callback", AuthCallback)
 

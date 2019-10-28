@@ -1,9 +1,6 @@
-import * as jwt from 'jwt-simple'
 import { writable } from 'svelte/store'
 import { createWritableStore, getStoreValue } from '~/utils/store'
 
-export const AccessToken = createWritableStore('access_token', '').useLocalStorage()
-export const RefreshToken = createWritableStore('refresh_token', '').useLocalStorage()
 export const UserObject = createWritableStore('user', '').useLocalStorage()
 
 /**
@@ -13,7 +10,7 @@ export const UserObject = createWritableStore('user', '').useLocalStorage()
 export const IsAuthenticated = writable(false)
 UserObject.subscribe(
     user => {
-        IsAuthenticated.set(user != null && user.exp - ((new Date).getTime() / 1000 | 0) > 0)
+        IsAuthenticated.set(user != null && user.id != null)
     }
 )
 
@@ -42,27 +39,4 @@ export async function onAuthorized (privileges=[], { onSuccess, onFailure }) {
     return (
         ok ? onSuccess() : onFailure()
     )
-}
-
-/**
- * Login
- * save the current access and refresh tokens
- * @param {object} tokens 
- */
-export function login ({ access_token, refresh_token }) {
-    AccessToken.set(access_token)
-    RefreshToken.set(refresh_token)
-    UserObject.set(
-        jwt.decode(access_token, '', true)
-    )
-}
-
-/**
- * Logout
- * clear all the personalized data from the client
- */
-export function logout () {
-    AccessToken.set(null)
-    RefreshToken.set(null)
-    UserObject.set(null)
 }

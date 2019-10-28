@@ -4,10 +4,9 @@ import (
 	"encoding/binary"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/benjamesfleming/gotasks/models"
-	"github.com/benjamesfleming/gotasks/utils/jwt"
+	"github.com/benjamesfleming/gotasks/utils/cookies"
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
@@ -45,19 +44,14 @@ func AuthCallback(c buffalo.Context) error {
 
 	// Check if the user is already signed up
 	user := new(models.User)
-	if err := tx.Where("email = ?", data.Email).First(user); err != nil {
-		fmt.Println(err)
-		return c.Render(500, r.String("server failed to query database"))
-	}
+	tx.Where("email = ?", data.Email).First(user)
 
 	if binary.BigEndian.Uint64(user.ID.Bytes()) == 0 {
 		// Map the providers data to a User model
 		user.UserName = data.Name
 		user.Provider = data.Provider
 		user.Email = data.Email
-		user.Privileges = strings.Join(
-			[]string{""}, "\n",
-		)
+		user.Privileges = []string{""}
 
 		// Validate the user data
 		// if there are any unknown errors then break
@@ -69,47 +63,19 @@ func AuthCallback(c buffalo.Context) error {
 		// Check for any validataion errors
 		// if there are any return them in a 301 request to an error page
 		if verrs.HasAny() {
-			return c.Redirect(301, "/#/auth/error")
+			return c.Redirect(302, "/#/auth/error")
 		}
 	}
 
-	// Generate a new JWT token pair
-	tkns, _ := jwt.GenerateTokenPair(user)
+	cookies.Set(c, "user_id", user.ID.String())
 
 	// Redirect the user to the clientside
 	// to complete the signup process
-	return c.Redirect(301, fmt.Sprintf("/#/auth/complete?access_token=%s&refresh_token=%s", tkns.AccessToken, tkns.RefreshToken))
+	return c.Redirect(302, fmt.Sprintf("/#/auth/complete?user_id=%s", user.ID))
 }
 
-// RefreshToken ...
-func RefreshToken(c buffalo.Context) error {
-	claims, err := jwt.ClaimsFromHeader(c)
-	if err != nil {
-		return c.Render(400, r.String("invalid token or malformed request"))
-	}
-
-	// Grab the database connection from the current context
-	// else return error and break
-	tx, ok := c.Value("tx").(*pop.Connection)
-	if !ok {
-		return c.Render(500, r.String("server failed to connect to database"))
-	}
-
-	// Grab the user from the database
-	user := new(models.User)
-	if err := tx.Where("id = ?", claims.StandardClaims.Id).First(user); err != nil {
-		fmt.Println(err)
-		return c.Render(500, r.String("server failed to query database"))
-	}
-
-	// Generate a new JWT token pair
-	tkns, _ := jwt.GenerateTokenPair(user)
-	data := struct {
-		AccessToken string `json:"access_token"`
-	}{
-		tkns.AccessToken,
-	}
-
-	// Return the access token to the user
-	return c.Render(200, r.JSON(data))
+// AuthLogout ...
+func AuthLogout(c buffalo.Context) error {
+	c.Cookies().Delete("user_id")
+	return c.Redirect(302, "/#/")
 }

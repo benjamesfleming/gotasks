@@ -1,16 +1,19 @@
 <script>
 import { parse } from 'qs'
-import { querystring, replace } from 'svelte-spa-router'
-import { login } from '~/utils/auth'
+import { querystring, push, replace } from 'svelte-spa-router'
+import { UserObject } from '~/utils/auth'
 
 $: {
-    const { access_token, refresh_token } = parse($querystring)
-    if (!access_token || !refresh_token) {
-        replace('/auth/error')
+    const { user_id } = parse($querystring)
+    if (!user_id) {
+        push('/auth/error')
     }
 
-    login({ access_token, refresh_token })
-    replace('/dashboard')
+    fetch('/api/users/' + user_id)
+        .then(res => res.ok ? res.json() : null)
+        .then(user => { UserObject.set(user); console.log(user)})
+        .then(() => replace('/dashboard'))
+        .catch(() => push('/auth/error'))
 }
 </script>
 
