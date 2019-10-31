@@ -1,5 +1,5 @@
 <script>
-import { replace } from 'svelte-spa-router'
+import { navigateTo } from 'svero'
 import { onAuthorized } from '~/utils/auth'
 
 let allUsers = []
@@ -7,7 +7,7 @@ let allUsers = []
 onAuthorized(
     ['iam:gotasks:users:*:list'],
     {
-        onFailure () { replace('/dashboard') },
+        onFailure () { navigateTo('/dashboard') },
         onSuccess () {
             allUsers = fetch('/api/users')
         }
