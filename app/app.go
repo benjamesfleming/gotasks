@@ -5,10 +5,10 @@ import (
 	"github.com/gobuffalo/envy"
 
 	"github.com/benjamesfleming/gotasks/app/http"
-	hlr "github.com/benjamesfleming/gotasks/app/http/handlers"
-	mwr "github.com/benjamesfleming/gotasks/app/http/middleware"
-	rsc "github.com/benjamesfleming/gotasks/app/http/resources"
-	mdl "github.com/benjamesfleming/gotasks/app/models"
+	"github.com/benjamesfleming/gotasks/app/http/handlers"
+	"github.com/benjamesfleming/gotasks/app/http/middleware"
+	"github.com/benjamesfleming/gotasks/app/http/resources"
+	"github.com/benjamesfleming/gotasks/app/models"
 	"github.com/gobuffalo/buffalo-pop/pop/popmw"
 
 	"github.com/markbates/goth/gothic"
@@ -39,30 +39,31 @@ func NewApp() *buffalo.App {
 			SessionName: "_gotasks_session",
 		})
 
+		handlers.Init(app)
+
 		// Add the database to the context
-		app.Use(popmw.Transaction(mdl.DB))
+		app.Use(popmw.Transaction(models.DB))
 
 		// Add the application routes.
 		// https://gobuffalo.io/en/docs/routing/
 		api := app.Group("/api")
-		api.Use(mwr.AuthMiddleware)
-		api.Resource("/tasks", rsc.TasksResource{})
-		api.Resource("/users", rsc.UsersResource{})
+		api.Use(middleware.AuthMiddleware)
+		api.Resource("/tasks", resources.TasksResource{})
+		api.Resource("/users", resources.UsersResource{})
 
 		// Auth routes
 		auth := app.Group("/auth")
-		auth.GET("/logout", hlr.AuthLogout)
-		auth.GET("/{provider}", buffalo.WrapHandlerFunc(gothic.BeginAuthHandler))
-		auth.GET("/{provider}/callback", hlr.AuthCallback)
+		auth.GET("/logout", handlers.AuthLogout)
+		auth.GET("/3rd-party/{provider}", buffalo.WrapHandlerFunc(gothic.BeginAuthHandler))
+		auth.GET("/3rd-party/{provider}/callback", handlers.AuthCallback)
 
 		// Misc routes
-		app.GET("/", hlr.HomeHandler)
+		app.GET("/", handlers.HomeHandler)
 		app.ServeFiles("/", http.RenderOptions.AssetsBox)
 
 		// Error handling
 		app.ErrorHandlers[404] = func(status int, err error, c buffalo.Context) error {
-			c.Redirect(301, "/#/"+c.Request().RequestURI)
-			return nil
+			return handlers.HomeHandler(c)
 		}
 	}
 

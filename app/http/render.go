@@ -7,8 +7,8 @@ import (
 
 // RenderOptions contains all the renderer config
 var RenderOptions = render.Options{
-	TemplatesBox: packr.New("app:templates", "../resources/views"),
-	AssetsBox:    packr.New("app:assets", "../public"),
+	TemplatesBox: packr.New("app:templates", "../../resources/views"),
+	AssetsBox:    packr.New("app:assets", "../../public"),
 }
 
 // R is a reference to the render engine

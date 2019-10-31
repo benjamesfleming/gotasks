@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/benjamesfleming/gotasks/app"
 	"github.com/benjamesfleming/gotasks/app/models"
 	"github.com/benjamesfleming/gotasks/x/cookies"
 
@@ -17,14 +16,13 @@ import (
 	"github.com/markbates/goth/providers/google"
 )
 
-var _App = app.NewApp()
-
-func init() {
-	gothic.Store = _App.SessionStore
+// Init ...
+func Init(app *buffalo.App) {
+	gothic.Store = app.SessionStore
 
 	goth.UseProviders(
-		google.New(os.Getenv("GOOGLE_KEY"), os.Getenv("GOOGLE_SECRET"), fmt.Sprintf("%s%s", _App.Host, "/auth/google/callback")),
-		github.New(os.Getenv("GITHUB_KEY"), os.Getenv("GITHUB_SECRET"), fmt.Sprintf("%s%s", _App.Host, "/auth/github/callback")),
+		google.New(os.Getenv("GOOGLE_KEY"), os.Getenv("GOOGLE_SECRET"), fmt.Sprintf("%s%s", app.Host, "/auth/3rd-party/google/callback")),
+		github.New(os.Getenv("GITHUB_KEY"), os.Getenv("GITHUB_SECRET"), fmt.Sprintf("%s%s", app.Host, "/auth/3rd-party/github/callback")),
 	)
 }
 
@@ -66,7 +64,7 @@ func AuthCallback(c buffalo.Context) error {
 		// Check for any validataion errors
 		// if there are any return them in a 301 request to an error page
 		if verrs.HasAny() {
-			return c.Redirect(302, "/#/auth/error")
+			return c.Redirect(302, fmt.Sprintf("/error?errors=%s", verrs))
 		}
 	}
 
@@ -74,11 +72,11 @@ func AuthCallback(c buffalo.Context) error {
 
 	// Redirect the user to the clientside
 	// to complete the signup process
-	return c.Redirect(302, fmt.Sprintf("/#/auth/complete?user_id=%s", user.ID))
+	return c.Redirect(302, fmt.Sprintf("/auth/complete?user_id=%s", user.ID))
 }
 
 // AuthLogout ...
 func AuthLogout(c buffalo.Context) error {
 	c.Cookies().Delete("user_id")
-	return c.Redirect(302, "/#/")
+	return c.Redirect(302, "/")
 }
