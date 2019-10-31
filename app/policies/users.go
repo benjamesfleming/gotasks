@@ -1,7 +1,7 @@
 package policies
 
 import (
-	"github.com/benjamesfleming/gotasks/models"
+	"github.com/benjamesfleming/gotasks/app/models"
 	"github.com/gobuffalo/buffalo"
 )
 

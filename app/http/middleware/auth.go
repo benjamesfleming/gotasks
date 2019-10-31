@@ -3,8 +3,9 @@ package middleware
 import (
 	"fmt"
 
-	"github.com/benjamesfleming/gotasks/models"
-	"github.com/benjamesfleming/gotasks/utils/cookies"
+	"github.com/benjamesfleming/gotasks/app/models"
+	"github.com/benjamesfleming/gotasks/x/cookies"
+	
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
 )

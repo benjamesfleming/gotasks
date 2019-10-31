@@ -1,9 +1,9 @@
-package actions
+package resources
 
 import (
 	"fmt"
 
-	"github.com/benjamesfleming/gotasks/models"
+	"github.com/benjamesfleming/gotasks/app/models"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
 )

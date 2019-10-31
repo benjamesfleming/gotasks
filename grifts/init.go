@@ -1,10 +1,10 @@
 package grifts
 
 import (
-	"github.com/benjamesfleming/gotasks/actions"
+	"github.com/benjamesfleming/gotasks/app"
 	"github.com/gobuffalo/buffalo"
 )
 
 func init() {
-	buffalo.Grifts(actions.App())
+	buffalo.Grifts(app.NewApp())
 }

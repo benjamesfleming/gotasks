@@ -1,13 +1,16 @@
-package actions
+package resources
 
 import (
 	"fmt"
 
-	"github.com/benjamesfleming/gotasks/models"
-	ACL "github.com/benjamesfleming/gotasks/utils/policies"
+	"github.com/benjamesfleming/gotasks/app/http"
+	"github.com/benjamesfleming/gotasks/app/models"
+	"github.com/benjamesfleming/gotasks/app/policies"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
 )
+
+var r = http.R
 
 // UsersResource is the resource for the User model
 type UsersResource struct {
@@ -27,7 +30,7 @@ type UsersResource struct {
 // List gets all Users.
 // GET /api/users
 func (v UsersResource) List(c buffalo.Context) error {
-	if ACL.NewUsersPolicy(c).CanList() {
+	if policies.NewUsersPolicy(c).CanList() {
 		// Grab the database connection from the current context
 		// else return error and break
 		tx, ok := c.Value("tx").(*pop.Connection)
@@ -61,7 +64,7 @@ func (v UsersResource) List(c buffalo.Context) error {
 // GET /api/users/{user_id}
 func (v UsersResource) Show(c buffalo.Context) error {
 	id := c.Param("user_id")
-	if ACL.NewUsersPolicy(c).CanShow(id) {
+	if policies.NewUsersPolicy(c).CanShow(id) {
 		// Grab the database connection from the current context
 		// else return error and break
 		tx, ok := c.Value("tx").(*pop.Connection)

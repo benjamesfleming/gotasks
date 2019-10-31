@@ -12,14 +12,14 @@ module.exports = {
   mode: APP_ENV,
   // devtool: APP_ENV == 'producation' ? false: 'source-map',
   entry: [
-    './assets/scripts/index.js',
-    './assets/styles/index.scss',
+    './resources/scripts/index.js',
+    './resources/styles/index.scss',
   ],
   output: { filename: '[name].[hash].js', path: `${__dirname}/public/assets` },
   resolve: {
     alias: {
       'svelte': path.resolve('node_modules', 'svelte'),
-      '~': path.resolve('assets', 'scripts'),
+      '~': path.resolve('resources', 'scripts'),
     },
     extensions: ['.scss', '.mjs', '.js', '.svelte'],
     mainFields: ['svelte', 'browser', 'module', 'main']
@@ -103,10 +103,10 @@ module.exports = {
   },
   plugins: [
     new CleanObsoleteChunks(),
-    new CopyWebpackPlugin(
-      [{ from: './assets', to: '' }], { copyUnmodified: true, ignore: ['styles/**', 'scripts/**'] }
-    ),
-    new IgnoreEmitPlugin(/\.styl$/),
+    // new CopyWebpackPlugin(
+    //   [{ from: './resources/static', to: '' }], { copyUnmodified: true, ignore: ['styles/**', 'scripts/**'] }
+    // ),
+    // new IgnoreEmitPlugin(/\.s[ac]ss$/),
     new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' }),
     new ManifestPlugin({ fileName: 'manifest.json' }),
     new LiveReloadPlugin({}),

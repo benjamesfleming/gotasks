@@ -1,4 +1,4 @@
-package actions
+package http
 
 import (
 	"github.com/gobuffalo/buffalo/render"
@@ -7,11 +7,13 @@ import (
 
 // RenderOptions contains all the renderer config
 var RenderOptions = render.Options{
-	TemplatesBox: packr.New("app:templates", "../templates"),
+	TemplatesBox: packr.New("app:templates", "../resources/views"),
 	AssetsBox:    packr.New("app:assets", "../public"),
 }
-var r *render.Engine
+
+// R is a reference to the render engine
+var R *render.Engine
 
 func init() {
-	r = render.New(RenderOptions)
+	R = render.New(RenderOptions)
 }

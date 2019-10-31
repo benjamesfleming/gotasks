@@ -1,11 +1,14 @@
-package actions
+package app
 
 import (
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/envy"
 
-	"github.com/benjamesfleming/gotasks/middleware"
-	"github.com/benjamesfleming/gotasks/models"
+	"github.com/benjamesfleming/gotasks/app/http"
+	hlr "github.com/benjamesfleming/gotasks/app/http/handlers"
+	mwr "github.com/benjamesfleming/gotasks/app/http/middleware"
+	rsc "github.com/benjamesfleming/gotasks/app/http/resources"
+	mdl "github.com/benjamesfleming/gotasks/app/models"
 	"github.com/gobuffalo/buffalo-pop/pop/popmw"
 
 	"github.com/markbates/goth/gothic"
@@ -16,7 +19,7 @@ import (
 var ENV = envy.Get("GO_ENV", "development")
 var app *buffalo.App
 
-// App is where all routes and middleware for buffalo
+// NewApp is where all routes and middleware for buffalo
 // should be defined. This is the nerve center of your
 // application.
 //
@@ -29,33 +32,32 @@ var app *buffalo.App
 // `ServeFiles` is a CATCH-ALL route, so it should always be
 // placed last in the route declarations, as it will prevent routes
 // declared after it to never be called.
-func App() *buffalo.App {
+func NewApp() *buffalo.App {
 	if app == nil {
 		app = buffalo.New(buffalo.Options{
 			Env:         ENV,
 			SessionName: "_gotasks_session",
-			// SessionStore: sessions.Null{},
 		})
 
 		// Add the database to the context
-		app.Use(popmw.Transaction(models.DB))
+		app.Use(popmw.Transaction(mdl.DB))
 
 		// Add the application routes.
 		// https://gobuffalo.io/en/docs/routing/
 		api := app.Group("/api")
-		api.Use(middleware.AuthMiddleware)
-		api.Resource("/tasks", TasksResource{})
-		api.Resource("/users", UsersResource{})
+		api.Use(mwr.AuthMiddleware)
+		api.Resource("/tasks", rsc.TasksResource{})
+		api.Resource("/users", rsc.UsersResource{})
 
 		// Auth routes
 		auth := app.Group("/auth")
-		auth.GET("/logout", AuthLogout)
+		auth.GET("/logout", hlr.AuthLogout)
 		auth.GET("/{provider}", buffalo.WrapHandlerFunc(gothic.BeginAuthHandler))
-		auth.GET("/{provider}/callback", AuthCallback)
+		auth.GET("/{provider}/callback", hlr.AuthCallback)
 
 		// Misc routes
-		app.GET("/", HomeHandler)
-		app.ServeFiles("/", RenderOptions.AssetsBox)
+		app.GET("/", hlr.HomeHandler)
+		app.ServeFiles("/", http.RenderOptions.AssetsBox)
 
 		// Error handling
 		app.ErrorHandlers[404] = func(status int, err error, c buffalo.Context) error {

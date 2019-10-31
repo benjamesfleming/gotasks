@@ -1,12 +1,13 @@
-package actions
+package handlers
 
 import (
 	"encoding/binary"
 	"fmt"
 	"os"
 
-	"github.com/benjamesfleming/gotasks/models"
-	"github.com/benjamesfleming/gotasks/utils/cookies"
+	"github.com/benjamesfleming/gotasks/app"
+	"github.com/benjamesfleming/gotasks/app/models"
+	"github.com/benjamesfleming/gotasks/x/cookies"
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
@@ -16,12 +17,14 @@ import (
 	"github.com/markbates/goth/providers/google"
 )
 
+var _App = app.NewApp()
+
 func init() {
-	gothic.Store = App().SessionStore
+	gothic.Store = _App.SessionStore
 
 	goth.UseProviders(
-		google.New(os.Getenv("GOOGLE_KEY"), os.Getenv("GOOGLE_SECRET"), fmt.Sprintf("%s%s", App().Host, "/auth/google/callback")),
-		github.New(os.Getenv("GITHUB_KEY"), os.Getenv("GITHUB_SECRET"), fmt.Sprintf("%s%s", App().Host, "/auth/github/callback")),
+		google.New(os.Getenv("GOOGLE_KEY"), os.Getenv("GOOGLE_SECRET"), fmt.Sprintf("%s%s", _App.Host, "/auth/google/callback")),
+		github.New(os.Getenv("GITHUB_KEY"), os.Getenv("GITHUB_SECRET"), fmt.Sprintf("%s%s", _App.Host, "/auth/github/callback")),
 	)
 }
 

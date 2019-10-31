@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/benjamesfleming/gotasks/actions"
+	"github.com/benjamesfleming/gotasks/app"
 )
 
 // main is the starting point for your Buffalo application.
@@ -13,7 +13,7 @@ import (
 // call `app.Serve()`, unless you don't want to start your
 // application that is. :)
 func main() {
-	app := actions.App()
+	app := app.NewApp()
 	if err := app.Serve(); err != nil {
 		log.Fatal(err)
 	}
