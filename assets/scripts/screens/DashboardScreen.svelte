@@ -1,26 +1,19 @@
 <script>
 import { UserObject } from '~/utils/auth'
+
+let user = $UserObject
+let tasks = fetch(`/api/users/${user.id}/tasks`).then(res => res.json())
 </script>
 
-{#await fetch('/api/users/'+$UserObject.id) then users}
-    <table>
-        <thead>
-            <tr>
-                <td>Email</td>
-                <td>UserName</td>
-                <td>Provider</td>
-                <td>CreatedAt</td>
-            </tr>
-        </thead>
-        <tbody>
-            {#each users as user}
-                <tr>
-                    <td>{user.email}</td>
-                    <td>{user.username}</td>
-                    <td>{user.provider}</td>
-                    <td>{user.created_at}</td>
-                </tr>
-            {/each}
-        </tbody>
-    </table>
+<ul>
+    <li>Username: {user.username}</li>
+    <li>Email: {user.email}</li>
+    <li>Provider: {user.provider}</li>
+    <li>CreatedAt: {user.created_at}</li>
+</ul>
+
+{#await tasks}
+<code>
+{JSON.stringify(tasks)}
+</code>
 {/await}

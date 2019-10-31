@@ -9,10 +9,7 @@
   },
   "repository": "github.com/benjamesfleming/gotasks",
   "dependencies": {
-    "jwt-simple": "^0.5.6",
-    "qs": "^6.9.0",
-    "svelte-spa-chunk": "^1.0.1",
-    "svelte-spa-router": "^1.2.1"
+    "svero": "^1.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",

@@ -1,6 +1,5 @@
 <script>
 import { replace } from 'svelte-spa-router'
-import { getData } from '~/utils/fetch'
 import { onAuthorized } from '~/utils/auth'
 
 let allUsers = []
@@ -10,7 +9,7 @@ onAuthorized(
     {
         onFailure () { replace('/dashboard') },
         onSuccess () {
-            allUsers = getData('/api/users')
+            allUsers = fetch('/api/users')
         }
     }
 )

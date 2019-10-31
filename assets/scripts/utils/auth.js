@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store'
+import { derived } from 'svelte/store'
 import { createWritableStore, getStoreValue } from '~/utils/store'
 
 export const UserObject = createWritableStore('user', '').useLocalStorage()
@@ -7,11 +7,8 @@ export const UserObject = createWritableStore('user', '').useLocalStorage()
  * Is Authenticated
  * true / false, is the user currently logged in
  */
-export const IsAuthenticated = writable(false)
-UserObject.subscribe(
-    user => {
-        IsAuthenticated.set(user != null && user.id != null)
-    }
+export const IsAuthenticated = derived(
+    UserObject, $User => $User != null && $User.id != null
 )
 
 /**
