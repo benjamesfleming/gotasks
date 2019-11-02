@@ -1,19 +1,60 @@
 <script>
+import { onMount } from 'svelte'
 import { navigateTo } from 'svero'
 import { UserObject } from '~/utils/auth'
+import { get, post } from '~/utils/api'
+import { User } from '~/models'
 
-const querystring = window.location.href.split('?')[1]
-const userId = (new URLSearchParams(querystring)).get('user_id')
+let currentUser
+let validationErrors
 
-if (!userId) {
-    navigateTo('/auth/error')
+let onComplete = async () => {
+    let [returnedUser, error] = await post('/auth/register', currentUser, {}, '')
+    let hasErrors = (error != null && error.code != null)
+
+    if (!hasErrors) {
+        UserObject.set(
+            User.fromApi(returnedUser)
+        )
+        navigateTo('/dashboard')
+    } else {
+        validationErrors = Object.keys(error.all).map(k => `${k}: ${error.all[k]}!`)
+    }
 }
 
-fetch('/api/users/' + userId)
-    .then(res => res.ok ? res.json() : null)
-    .then(user => { UserObject.set(user); console.log(user)})
-    .then(() => navigateTo('/dashboard'))
-    .catch(() => navigateTo('/auth/error'))
+onMount(async function () {
+    let [providedUser] = await get('/auth/user', {}, '')
+    let isRegistered = providedUser['attrs']['registered'] == true
+
+    if (isRegistered) {
+        let [returnedUser] = await get('/auth/me', {}, '')
+        UserObject.set(
+            User.fromApi(returnedUser)
+        )
+        navigateTo('/dashboard')
+    } else {
+        currentUser = User.fromProvider(providedUser)
+        UserObject.set(
+            currentUser
+        )
+    }
+})
 </script>
 
-<p>Loading...</p>
+{#if currentUser == null}
+    <p>Loading...</p>  
+{:else}
+    <h4>Hello, {currentUser.fullName}!</h4>
+    <p>Enter details to finish registration!</p>
+
+    {#each validationErrors || [] as error}
+        <p>{error}</p>
+    {/each}
+
+    <input type="text" bind:value={currentUser.firstName} placeholder="First Name"/>
+    <input type="text" bind:value={currentUser.lastName} placeholder="Last Name"/>
+    <input type="text" bind:value={currentUser.username} placeholder="Username"/>
+    <input type="email" bind:value={currentUser.email} placeholder="Email"/>
+
+    <input type="button" value="Complete" on:click={onComplete}/>
+{/if}

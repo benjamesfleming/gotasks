@@ -8,7 +8,23 @@ export const UserObject = createWritableStore('user', '').useLocalStorage()
  * true / false, is the user currently logged in
  */
 export const IsAuthenticated = derived(
-    UserObject, $User => $User != null && $User.id != null
+    UserObject, $User => $User != null
+)
+
+/**
+ * Is Registered
+ * true / fase, is the logged in user registered
+ */
+export const IsRegistered = derived(
+    [UserObject, IsAuthenticated], ([$User, $IsAuthenticated]) => $IsAuthenticated && ($User != null && $User.isRegistered)
+)
+
+/**
+ * Is Admin
+ * true / fase, is the logged in user an admin
+ */
+export const IsAdmin = derived(
+    [UserObject, IsAuthenticated], ([$User, $IsAuthenticated]) => $IsAuthenticated && ($User != null && $User.isAdmin)
 )
 
 /**

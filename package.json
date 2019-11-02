@@ -9,6 +9,9 @@
   },
   "repository": "github.com/benjamesfleming/gotasks",
   "dependencies": {
+    "js-cookie": "^2.2.1",
+    "lodash": "^4.17.15",
+    "svelte-routing": "^1.4.0",
     "svero": "^1.0.0"
   },
   "devDependencies": {

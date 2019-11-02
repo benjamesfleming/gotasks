@@ -1,7 +1,7 @@
 <script>
 import { Router, Route } from 'svero'
 
-import { IsAuthenticated } from '~/utils/auth'
+import { IsRegistered, IsAdmin } from '~/utils/auth'
 
 import AdminScreen from '~/screens/AdminScreen'
 import AuthCompleteScreen from '~/screens/AuthCompleteScreen'
@@ -14,10 +14,17 @@ import DashboardScreen from '~/screens/DashboardScreen'
 
 <Router>
     <Route path="*" component={NotFoundScreen} />
-    <Route path="/error" component={ErrorScreen} />
+    
     <Route path="/" component={WelcomeScreen} exact />
-    <Route path="/auth/complete" component={AuthCompleteScreen} />
-    <Route path="/auth/logout" component={AuthLogoutScreen} />
-    <Route path="/admin" component={AdminScreen} condition={$IsAuthenticated} redirect="/" />
-    <Route path="/dashboard" component={DashboardScreen} condition={$IsAuthenticated} redirect="/" />
+    <Route path="/error" component={ErrorScreen} />
+
+    <Route path="/auth-complete" component={AuthCompleteScreen} />
+    <Route path="/auth-logout" component={AuthLogoutScreen} />
+
+    <Route path="/admin" component={AdminScreen} condition={$IsAdmin} redirect="/" />
+
+    <Router path="/dashboard" condition={$IsRegistered} redirect="/">
+        <Route path="/" component={DashboardScreen} />
+        <Route path="/tasks/create" />
+    </Router>
 </Router>

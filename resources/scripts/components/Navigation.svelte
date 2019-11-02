@@ -1,10 +1,15 @@
 <script>
-import { IsAuthenticated } from '~/utils/auth'
+import { IsAuthenticated, IsRegistered } from '~/utils/auth'
 </script>
 
 {#if !$IsAuthenticated}
-<a href="/auth/3rd-party/github">Auth w/GitHub</a>
+    <a href="/auth/github/login?from=/auth-complete">Auth w/GitHub</a>
 {:else}
-<a href="/dashboard">Dashboard</a>
-<a href="/auth/logout">Logout</a>
+    {#if $IsRegistered}
+        <a href="/dashboard">Dashboard</a>
+    {:else}
+        <a href="/auth-complete">Complete Registation</a>
+    {/if}
+
+    <a href="/auth-logout">Logout</a>
 {/if}
