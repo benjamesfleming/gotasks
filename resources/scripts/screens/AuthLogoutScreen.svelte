@@ -7,7 +7,7 @@ import { get } from '~/utils/api'
 onMount(async function () {
     await get('/auth/logout', {}, '').catch(console.error)
     UserObject.set(null)
-    navigateTo('/')
+    navigateTo('/#/')
 })
 </script>
 

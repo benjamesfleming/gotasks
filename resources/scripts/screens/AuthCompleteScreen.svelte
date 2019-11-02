@@ -16,7 +16,7 @@ let onComplete = async () => {
         UserObject.set(
             User.fromApi(returnedUser)
         )
-        navigateTo('/dashboard')
+        navigateTo('/#/app')
     } else {
         validationErrors = Object.keys(error.all).map(k => `${k}: ${error.all[k]}!`)
     }
@@ -31,7 +31,7 @@ onMount(async function () {
         UserObject.set(
             User.fromApi(returnedUser)
         )
-        navigateTo('/dashboard')
+        navigateTo('/#/app')
     } else {
         currentUser = User.fromProvider(providedUser)
         UserObject.set(

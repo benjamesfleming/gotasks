@@ -27,13 +27,13 @@ import { UserObject as user } from '~/utils/auth'
             <td>{task.completed ? "true" : "false"}</td>
             <td>{task.streak}</td>
             <td>
-                <a href="/dashboard/tasks/{task.id}/edit">Edit</a>
+                <a href="/#/app/tasks/{task.id}/edit">Edit</a>
                 <input type="checkbox" bind:value={task.completed}/>
             </td>
         </tr>
         {:else}
         <tr>
-            <td colspan="5">No Tasks Found... <a href="/dashboard/tasks/create">Create One</a></td>
+            <td colspan="5">No Tasks Found... <a href="/#/app/tasks/create">Create One</a></td>
         </tr>
         {/each}
     </tbody>

@@ -13,18 +13,20 @@ import DashboardScreen from '~/screens/DashboardScreen'
 </script>
 
 <Router>
-    <Route path="*" component={NotFoundScreen} />
+    <Route fallback path="*" component={NotFoundScreen} />
     
-    <Route path="/" component={WelcomeScreen} exact />
-    <Route path="/error" component={ErrorScreen} />
+    <Route exact path="#/" component={WelcomeScreen} />
+    <Route exact path="#/error" component={ErrorScreen} />
 
-    <Route path="/auth-complete" component={AuthCompleteScreen} />
-    <Route path="/auth-logout" component={AuthLogoutScreen} />
+    <Route exact path="#/auth-complete" component={AuthCompleteScreen} />
+    <Route exact path="#/auth-logout" component={AuthLogoutScreen} />
 
-    <Route path="/admin" component={AdminScreen} condition={$IsAdmin} redirect="/" />
+    <Route exact path="#/admin" component={AdminScreen} condition={$IsAdmin} redirect="#/" />
 
-    <Router path="/dashboard" condition={$IsRegistered} redirect="/">
-        <Route path="/" component={DashboardScreen} />
-        <Route path="/tasks/create" />
+    <Router exact path="#/app" condition={$IsRegistered} redirect="#/" nofallback>
+        <Route exact component={DashboardScreen} />
+        <Route exact path="/tasks/create">
+            <h2>Create Task Here</h2>
+        </Route>
     </Router>
 </Router>
