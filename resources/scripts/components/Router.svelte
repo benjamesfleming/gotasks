@@ -10,6 +10,7 @@ import NotFoundScreen from '~/screens/NotFoundScreen'
 import ErrorScreen from '~/screens/ErrorScreen'
 import WelcomeScreen from '~/screens/WelcomeScreen'
 import DashboardScreen from '~/screens/DashboardScreen'
+import TaskCreateScreen from '~/screens/TaskCreateScreen'
 </script>
 
 <Router>
@@ -25,8 +26,6 @@ import DashboardScreen from '~/screens/DashboardScreen'
 
     <Router exact path="#/app" condition={$IsRegistered} redirect="#/" nofallback>
         <Route exact component={DashboardScreen} />
-        <Route exact path="/tasks/create">
-            <h2>Create Task Here</h2>
-        </Route>
+        <Route exact path="/tasks/create" component={TaskCreateScreen}/>
     </Router>
 </Router>
