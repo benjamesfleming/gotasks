@@ -8,7 +8,7 @@ export const UserObject = createWritableStore('user', '').useLocalStorage()
  * true / false, is the user currently logged in
  */
 export const IsAuthenticated = derived(
-    UserObject, $User => $User != null
+    UserObject, $User => $User != null && $User.id != null
 )
 
 /**
