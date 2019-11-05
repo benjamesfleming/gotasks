@@ -12,13 +12,11 @@ workspace:
 
 steps:
 - name: build frontend
-  image: node
   commands:
   - npm install
   - npm run build
 
 - name: build backend
-  image: golang
   commands:
   - go get
   - go get github.com/GeertJohan/go.rice/rice
