@@ -6,36 +6,36 @@ name: default
 token:
   from_secret: token
 
+server:
+  image: docker-18-04
+  size: s-1vcpu-1gb
+  region: nyc1
+
 workspace:
   base: /go
   path: src/git.benfleming.nz/benfleming/gotasks
 
 steps:
-- name: greeting
+- name: build frontend
   commands:
-  - echo hello world
+  - npm install
+  - npm run build
 
-# steps:
-# - name: build frontend
-#   commands:
-#   - npm install
-#   - npm run build
+- name: build backend
+  commands:
+  - go get
+  - go get github.com/GeertJohan/go.rice/rice
+  - rice embed-go
+  - go build -o build/gotasks
+  - chmod +x build/gotasks
 
-# - name: build backend
-#   commands:
-#   - go get
-#   - go get github.com/GeertJohan/go.rice/rice
-#   - rice embed-go
-#   - go build -o build/gotasks
-#   - chmod +x build/gotasks
-
-# - name: upload
-#   image: plugins/s3
-#   settings:
-#     bucket: drone-artifacts.benfleming.nz
-#     access_key: 
-#       from_secret: minio_access_key_id
-#     secret_key: 
-#       from_secret: minio_secret_access_key
-#     source: build/**/*
-#     target: /target/${DRONE_BUILD_FINISHED}
+- name: upload
+  image: plugins/s3
+  settings:
+    bucket: drone-artifacts.benfleming.nz
+    access_key: 
+      from_secret: minio_access_key_id
+    secret_key: 
+      from_secret: minio_secret_access_key
+    source: build/**/*
+    target: /target/${DRONE_BUILD_FINISHED}
