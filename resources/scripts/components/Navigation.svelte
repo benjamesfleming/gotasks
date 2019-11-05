@@ -30,6 +30,10 @@ nav > div > a {
     &:hover {
         @apply bg-gray-500 shadow-inner;
     }
+
+    i {
+        @apply mr-2;
+    }
 }
 </style>
 
@@ -39,7 +43,9 @@ nav > div > a {
 
     <div>
     {#if !$IsAuthenticated}
-    <a href="/auth/github/login?from=/#/auth-complete">Auth w/GitHub</a>
+    <a href="/auth/github/login?from=/#/auth-complete">
+        <i class="fab fa-github"></i> Login
+    </a>
     {:else}
         {#if $IsRegistered}
         <a href="/#/app">Dashboard</a>
