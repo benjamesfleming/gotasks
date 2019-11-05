@@ -9,6 +9,7 @@ import (
 
 	h "git.benfleming.nz/benfleming/gotasks/app/handlers"
 	"git.benfleming.nz/benfleming/gotasks/database/models"
+	r "git.benfleming.nz/benfleming/gotasks/routes"
 	rice "github.com/GeertJohan/go.rice"
 	"github.com/go-pkgz/auth"
 	"github.com/go-pkgz/auth/avatar"
@@ -91,7 +92,7 @@ func main() {
 	// Retrieve auth middleware
 	m := service.Middleware()
 
-	// isAuth := echo.WrapMiddleware(m.Auth)
+	isAuth := echo.WrapMiddleware(m.Auth)
 	// isAdmin := echo.WrapMiddleware(m.AdminOnly)
 	// isTraced := echo.WrapMiddleware(m.Trace)
 
@@ -125,13 +126,8 @@ func main() {
 	e.GET("/", h.HomeHandler)
 	e.GET("/assets/*", echo.WrapHandler(http.FileServer(assetsBox)))
 
-	// api := e.Group("/api", isAuth)
-	// api.POST("/me/register", h.AuthRegisterHandler)
-
-	authRoutes, _ := service.Handlers()
-	e.GET("/auth/me", h.AuthMeHandler)
-	e.POST("/auth/register", h.AuthRegisterHandler)
-	e.Any("/auth/*", echo.WrapHandler(authRoutes))
+	r.RegisterAPIRoutes(e, isAuth)
+	r.RegisterAuthRoutes(e, service)
 
 	// Add error handling
 	echo.NotFoundHandler = h.HomeHandler
