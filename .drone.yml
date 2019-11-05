@@ -11,26 +11,31 @@ workspace:
   path: src/git.benfleming.nz/benfleming/gotasks
 
 steps:
-- name: build frontend
+- name: greeting
   commands:
-  - npm install
-  - npm run build
+  - echo hello world
 
-- name: build backend
-  commands:
-  - go get
-  - go get github.com/GeertJohan/go.rice/rice
-  - rice embed-go
-  - go build -o build/gotasks
-  - chmod +x build/gotasks
+# steps:
+# - name: build frontend
+#   commands:
+#   - npm install
+#   - npm run build
 
-- name: upload
-  image: plugins/s3
-  settings:
-    bucket: drone-artifacts.benfleming.nz
-    access_key: 
-      from_secret: minio_access_key_id
-    secret_key: 
-      from_secret: minio_secret_access_key
-    source: build/**/*
-    target: /target/${DRONE_BUILD_FINISHED}
+# - name: build backend
+#   commands:
+#   - go get
+#   - go get github.com/GeertJohan/go.rice/rice
+#   - rice embed-go
+#   - go build -o build/gotasks
+#   - chmod +x build/gotasks
+
+# - name: upload
+#   image: plugins/s3
+#   settings:
+#     bucket: drone-artifacts.benfleming.nz
+#     access_key: 
+#       from_secret: minio_access_key_id
+#     secret_key: 
+#       from_secret: minio_secret_access_key
+#     source: build/**/*
+#     target: /target/${DRONE_BUILD_FINISHED}
