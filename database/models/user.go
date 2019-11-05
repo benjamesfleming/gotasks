@@ -33,3 +33,4 @@ func (u User) Validate() error {
 		v.Field(&u.LastName, v.Required, v.Length(1, 64)),
 	)
 }
+
