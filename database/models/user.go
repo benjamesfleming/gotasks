@@ -11,6 +11,7 @@ import (
 type User struct {
 	gorm.Model
 	ProviderID nulls.String
+	Avatar     string
 	Username   string `gorm:"size:32"`
 	Email      string `gorm:"type:varchar(255);unique_index"`
 	FirstName  string `gorm:"size:64"`
@@ -33,4 +34,3 @@ func (u User) Validate() error {
 		v.Field(&u.LastName, v.Required, v.Length(1, 64)),
 	)
 }
-

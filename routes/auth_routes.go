@@ -10,10 +10,12 @@ import (
 // GET,POST /auth/*
 func RegisterAuthRoutes(e *echo.Echo, a *auth.Service) {
 
-	authRoutes, _ := a.Handlers()
+	authRoutes, avaRoutes := a.Handlers()
 
 	e.GET("/auth/me", h.AuthMeHandler)
 	e.POST("/auth/register", h.AuthRegisterHandler)
+
 	e.Any("/auth/*", echo.WrapHandler(authRoutes))
+	e.Any("/avatar/*", echo.WrapHandler(avaRoutes))
 
 }

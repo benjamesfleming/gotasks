@@ -21,6 +21,8 @@ func AuthRegisterHandler(e echo.Context) error {
 
 	user.IsAdmin = false
 	user.ProviderID = nulls.NewString(tkn.ID)
+	user.Avatar = tkn.Picture
+
 	if err := user.Validate(); err != nil {
 		return e.JSON(400, err)
 	}
