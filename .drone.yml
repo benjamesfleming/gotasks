@@ -1,15 +1,7 @@
 ---
 kind: pipeline
-type: digitalocean
+type: docker
 name: default
-
-token:
-  from_secret: token
-
-server:
-  image: docker-18-04
-  size: s-1vcpu-1gb
-  region: nyc1
 
 workspace:
   base: /go
@@ -17,11 +9,13 @@ workspace:
 
 steps:
 - name: build frontend
+  image: node
   commands:
   - npm install
   - npm run build
 
 - name: build backend
+  image: golang
   commands:
   - go get
   - go get github.com/GeertJohan/go.rice/rice
