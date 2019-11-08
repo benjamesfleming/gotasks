@@ -54,13 +54,14 @@ module.exports = {
               ],
             },
           },
+          { loader: 'resolve-url-loader' },
           { loader: 'sass-loader' },
         ]
       },
 
       {
         test: /\.css$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
         use: [
           { loader: MiniCssExtractPlugin.loader },
           { loader: 'css-loader' },
@@ -107,7 +108,7 @@ module.exports = {
       */
 
       {
-        test: /\.svelte$/,
+        test: /\.(svelte|html)$/,
         // exclude: /node_modules/,
         use: [
           { loader: 'babel-loader' },
@@ -119,6 +120,25 @@ module.exports = {
             }
           },
         ]
+      },
+
+      /*
+      ███████╗ ██████╗ ███╗   ██╗████████╗███████╗
+      ██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝██╔════╝
+      █████╗  ██║   ██║██╔██╗ ██║   ██║   ███████╗
+      ██╔══╝  ██║   ██║██║╚██╗██║   ██║   ╚════██║
+      ██║     ╚██████╔╝██║ ╚████║   ██║   ███████║
+      ╚═╝      ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝
+
+      */
+
+      {
+        test: /\.(woff2?|ttf|otf|eot|svg)$/,
+        exclude: /node_modules/,
+        loader: 'file-loader',
+        options: {
+            name: '[path][name].[ext]'
+        }
       },
 
     ]
