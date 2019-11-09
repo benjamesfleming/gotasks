@@ -69,7 +69,7 @@ export class User {
     set tasks (value) { this._tasks = value }
     get tasks () {
         return new Promise(async (done) => {
-            if (this._tasks.length == 0) {
+            if (true || this._tasks.length == 0) {
                 this._tasks = (await get(`/users/${this.id}/tasks`))[0].map(Task.fromApi)
             }
             done(this._tasks)
