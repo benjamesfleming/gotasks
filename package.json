@@ -25,6 +25,7 @@
     "@babel/preset-env": "^7.6.3",
     "@fortawesome/fontawesome-free": "^5.11.2",
     "@nsivertsen/svelte-preprocess-postcss": "^0.1.0",
+    "@tailwindcss/custom-forms": "^0.2.1",
     "autoprefixer": "^9.7.1",
     "babel-loader": "^8.0.6",
     "copy-webpack-plugin": "~4.5.2",
