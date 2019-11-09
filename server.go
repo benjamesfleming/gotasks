@@ -70,7 +70,7 @@ func main() {
 			CookieDuration: time.Hour * 24,  // cookie expires in 1 day and will enforce re-login
 			Issuer:         "gotasks",
 			URL:            envy.Get("HOST", "http://127.0.0.1:3000"),
-			AvatarStore:    avatar.NewLocalFS("/tmp"),
+			AvatarStore:    avatar.NewLocalFS("./tmp/avatars"),
 			ClaimsUpd: token.ClaimsUpdFunc(func(claims token.Claims) token.Claims {
 				if claims.User != nil {
 					claims.User.SetAdmin(false)
