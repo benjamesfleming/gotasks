@@ -26,7 +26,6 @@
 
     & > i {
         @apply py-2 px-2 pr-3;
-        color: #444;
     }
 
     &:hover {
@@ -35,14 +34,9 @@
 }
 
 .toolbar > .button {
-    @apply py-2 m-0;
-    @apply rounded shadow-md opacity-100;
-    @apply transition-all;
+    @apply shadow-md;
+    @apply my-0;
     background: theme('colors.primary');
-
-    &:hover {
-        @apply shadow-lg opacity-75;
-    }
 }
 
 .toolbar > button {
