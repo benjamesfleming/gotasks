@@ -9,6 +9,10 @@
 @import "./components/button";
 @import "./components/toolbar";
 
+body {
+    background: url(/assets/images/bg-pattern.png);
+}
+
 .container {
     @apply flex py-6;
 }
