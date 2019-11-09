@@ -51,7 +51,8 @@ func UserShowTasksHandler(e echo.Context) error {
 	tasks := new([]models.Task)
 
 	db := e.Get("Database").(*gorm.DB)
-	db.Where("id = ?", id).First(&user).Related(&tasks)
+	db.Where("id = ?", id).First(&user)
+	db.Where("user_id = ?", id).Find(&tasks)
 
 	if !p.NewUserPolicy(e).CanShowTasks(user) {
 		return e.JSON(401, errUnauthorized)
