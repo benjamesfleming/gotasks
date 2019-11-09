@@ -2,58 +2,39 @@
 import { IsAuthenticated, IsRegistered } from '~/utils/auth'
 </script>
 
-<style lang="scss">
+<style lang="postcss">
 nav {
-    @apply flex justify-between;
-    @apply bg-gray-700 text-white;
-    @apply shadow-xl;
-    @apply h-16;
+    background: theme('colors.primary');
 }
 
 nav > h2 {
-    @apply font-bold;
-    @apply px-4 w-32 flex;
-    @apply items-center justify-center;
     letter-spacing: .1rem;
 }
 
 nav > div {
-    @apply flex;
     height: 100%;
-}
-
-nav > div > a {
-    @apply px-4 my-2 mr-2 w-32 flex rounded;
-    @apply items-center justify-center;
-    transition: all 0.2s ease-in-out;
-
-    &:hover {
-        @apply bg-gray-500 shadow-inner;
-    }
-
-    i {
-        @apply mr-2;
-    }
 }
 </style>
 
-<nav>
+<nav class="flex justify-between text-white shadow-xl h-16">
 
-    <h2>GoTasks</h2>
+    <h2 class="font-bold px-4 w-32 flex items-center justify-center">
+        GoTasks
+    </h2>
 
-    <div>
+    <div class="flex h-100">
     {#if !$IsAuthenticated}
-    <a href="/auth/github/login?from=/#/auth-complete">
+    <a class="button" href="/auth/github/login?from=/#/auth-complete">
         <i class="fab fa-github"></i> Login
     </a>
     {:else}
         {#if $IsRegistered}
-        <a href="/#/app">Dashboard</a>
+        <a class="button" href="/#/app">Dashboard</a>
         {:else}
-        <a href="/#/auth-complete">Complete Registation</a>
+        <a class="button" href="/#/auth-complete">Complete Registation</a>
         {/if}
 
-        <a href="/#/auth-logout">Logout</a>
+        <a class="button" href="/#/auth-logout">Logout</a>
     {/if}
     </div>
     

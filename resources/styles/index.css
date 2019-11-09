@@ -1,0 +1,14 @@
+@import "./fontawesome/all";
+@import "./fontawesome/brands";
+@import "./fontawesome/solid";
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@import "./components/button";
+@import "./components/toolbar";
+
+.container {
+    @apply flex py-6;
+}

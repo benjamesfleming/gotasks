@@ -1,0 +1,66 @@
+.toolbar > .toolbar-input-group {
+    @apply rounded shadow-md;
+    @apply flex justify-center items-center;
+    @apply transition-all;
+    background: theme('colors.primary');
+    box-sizing: border-box;
+    overflow: hidden;
+    cursor: pointer;
+
+    & > span, input {
+        margin: 0;
+        padding: 0;
+    }
+
+    & > span {
+        display: inline-block;
+        @apply h-full;
+        overflow: hidden;
+    }
+
+    & input {
+        @apply h-full;
+        border: none;
+        padding: 8px;
+    }
+
+    & > i {
+        @apply py-2 px-2 pr-3;
+        color: #444;
+    }
+
+    &:hover {
+        @apply shadow-lg opacity-75;
+    }
+}
+
+.toolbar > .button {
+    @apply py-2 m-0;
+    @apply rounded shadow-md opacity-100;
+    @apply transition-all;
+    background: theme('colors.primary');
+
+    &:hover {
+        @apply shadow-lg opacity-75;
+    }
+}
+
+.toolbar > button {
+    @apply text-blue-600;
+    outline: none;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+
+    &::after {
+        @apply bg-blue-600;
+        opacity: 0.4;
+        content: "";
+        width: calc(100% + 4px);
+        position: absolute;
+        bottom: 3px;
+        left: -2px;
+        right: -2px;
+        height: 3px;
+    }
+}

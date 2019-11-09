@@ -10,14 +10,15 @@ import (
 )
 
 var (
-	ERR_UNAUTHORIZED = errors.New("unauthorized")
+	errUnauthorized   = errors.New("unauthorized, you cannot access this task")
+	errNotImplemented = errors.New("not implemented")
 )
 
 // TaskListHandler handles the request to list all tasks
 // GET /api/tasks
 func TaskListHandler(e echo.Context) error {
 	if !p.NewTaskPolicy(e).CanList() {
-		return e.JSON(401, ERR_UNAUTHORIZED)
+		return e.JSON(401, errUnauthorized)
 	}
 
 	tasks := new([]models.Task)
@@ -38,7 +39,7 @@ func TaskShowHandler(e echo.Context) error {
 	db.Where("id = ?", id).First(&task)
 
 	if !p.NewTaskPolicy(e).CanShow(task) {
-		return e.JSON(401, ERR_UNAUTHORIZED)
+		return e.JSON(401, errUnauthorized)
 	}
 
 	return e.JSON(200, task)
@@ -48,7 +49,7 @@ func TaskShowHandler(e echo.Context) error {
 // POST /api/tasks
 func TaskCreateHandler(e echo.Context) error {
 	if !p.NewTaskPolicy(e).CanCreate() {
-		return e.JSON(401, ERR_UNAUTHORIZED)
+		return e.JSON(401, errUnauthorized)
 	}
 
 	task := new(models.Task)

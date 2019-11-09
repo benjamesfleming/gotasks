@@ -5,6 +5,10 @@ import { UserObject } from '~/utils/auth'
 /**
  * Post
  * sends data to the api using the post method
+ * @param {string} path 
+ * @param {object} body 
+ * @param {object} options 
+ * @param {string} prefix
  */
 export async function post(path, body, { headers, ...options }, prefix='/api') {
    return __fetch(
@@ -24,6 +28,9 @@ export async function post(path, body, { headers, ...options }, prefix='/api') {
 /**
  * Get
  * sends data to the api using the get method
+ * @param {string} path 
+ * @param {object} options 
+ * @param {string} prefix
  */
 export async function get(path, options={}, prefix='/api') {
     return __fetch(
@@ -40,6 +47,8 @@ export async function get(path, options={}, prefix='/api') {
  * basic wrapper araound the window.fetch api to add auth headers
  * @param {string} path 
  * @param {object} options 
+ * @param {string} prefix
+ * @returns {array} [data, errors]
  */
 export async function __fetch(path, { headers, ...options }, prefix='') {
     const response = await fetch(

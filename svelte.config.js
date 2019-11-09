@@ -1,10 +1,5 @@
 module.exports = {
-  preprocess: require('svelte-preprocess')({
-
-    /**
-     * Enable Sass Support
-     */
-    sass: true,
-
-  }),
+  preprocess: [
+    require('svelte-preprocess-postcss')()
+  ],
 }

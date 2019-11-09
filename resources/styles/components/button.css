@@ -1,0 +1,15 @@
+.button {
+    @apply px-4 my-2 mr-2 w-32 flex rounded;
+    @apply items-center justify-center;
+    @apply transition-all;
+
+    & > i {
+        @apply mr-2;
+    }
+
+    &:hover {
+        @apply shadow-inner;
+        @apply text-gray-900;
+        background: rgba(255,255,255,0.6);
+    }
+}

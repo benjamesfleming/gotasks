@@ -13,7 +13,7 @@ module.exports = {
   // devtool: APP_ENV == 'producation' ? false: 'source-map',
   entry: [
     './resources/scripts/index.js',
-    './resources/styles/index.scss',
+    './resources/styles/index.css',
   ],
   output: { filename: 'bundle.js', path: `${__dirname}/public/assets` },
   resolve: {
@@ -28,36 +28,14 @@ module.exports = {
     rules: [
 
       /*
-      ███████╗ █████╗ ███████╗███████╗
-      ██╔════╝██╔══██╗██╔════╝██╔════╝
-      ███████╗███████║███████╗███████╗
-      ╚════██║██╔══██║╚════██║╚════██║
-      ███████║██║  ██║███████║███████║
-      ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝
+       ██████╗███████╗███████╗
+      ██╔════╝██╔════╝██╔════╝
+      ██║     ███████╗███████╗
+      ██║     ╚════██║╚════██║
+      ╚██████╗███████║███████║
+       ╚═════╝╚══════╝╚══════╝
 
       */
-
-      {
-        test: /\.s[ac]ss$/,
-        exclude: /node_modules/,
-        use: [
-          { loader: MiniCssExtractPlugin.loader },
-          { loader: 'css-loader' },
-          {
-            loader: 'postcss-loader',
-            options: {
-              ident: 'postcss',
-              plugins: [
-                require('postcss-import'),
-                require('tailwindcss'),
-                require('autoprefixer'),
-              ],
-            },
-          },
-          { loader: 'resolve-url-loader' },
-          { loader: 'sass-loader' },
-        ]
-      },
 
       {
         test: /\.css$/,
@@ -65,17 +43,7 @@ module.exports = {
         use: [
           { loader: MiniCssExtractPlugin.loader },
           { loader: 'css-loader' },
-          {
-            loader: 'postcss-loader',
-            options: {
-              ident: 'postcss',
-              plugins: [
-                require('postcss-import'),
-                require('tailwindcss'),
-                require('autoprefixer'),
-              ],
-            },
-          },
+          { loader: 'postcss-loader' },
         ]
       },
 

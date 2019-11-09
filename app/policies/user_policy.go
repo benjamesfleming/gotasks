@@ -36,6 +36,12 @@ func (p *UserPolicy) CanShow(u *models.User) bool {
 	return p.User.IsAdmin || (p.User.ID == u.ID)
 }
 
+// CanShowTasks validates if the current user is allowed to
+// show all the requested users tasks
+func (p *UserPolicy) CanShowTasks(u *models.User) bool {
+	return p.User.IsAdmin || (p.User.ID == u.ID)
+}
+
 // CanCreate validates if the current user is allowed to
 // create a new user
 func (p *UserPolicy) CanCreate() bool {

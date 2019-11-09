@@ -1,6 +1,9 @@
 import { kebabCase, replace, split } from 'lodash'
+import { Task } from '~/models'
+import { get } from '~/utils/api'
 
 export class User {
+
     constructor ({ id, providerId, avatar, firstName, lastName, username, email, tasks, isAdmin, isRegistered, createdAt, updatedAt }) {
         this.id             = id
         this.providerId     = providerId
@@ -9,7 +12,7 @@ export class User {
         this.lastName       = lastName
         this.username       = username
         this.email          = email
-        this.tasks          = tasks
+        this._tasks         = tasks || []
         this.isAdmin        = isAdmin
         this.isRegistered   = isRegistered
         this.createdAt      = createdAt
@@ -60,5 +63,16 @@ export class User {
     // Get the provider name from the provider id
     get provider () {
         return split(this.providerId, '_')[0]
+    }
+
+    // Get / Set the tasks from the api
+    set tasks (value) { this._tasks = value }
+    get tasks () {
+        return new Promise(async (done) => {
+            if (this._tasks.length == 0) {
+                this._tasks = (await get(`/users/${this.id}/tasks`))[0].map(Task.fromApi)
+            }
+            done(this._tasks)
+        })
     }
 }
