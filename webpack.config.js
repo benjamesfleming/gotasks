@@ -113,9 +113,9 @@ module.exports = {
   },
   plugins: [
     new CleanObsoleteChunks(),
-    // new CopyWebpackPlugin(
-    //   [{ from: './resources/static', to: '' }], { copyUnmodified: true, ignore: ['styles/**', 'scripts/**'] }
-    // ),
+    new CopyWebpackPlugin(
+      [{ from: './resources', to: '' }], { copyUnmodified: true, ignore: ['styles/**', 'scripts/**', 'views/**', 'webfonts/**'] }
+    ),
     // new IgnoreEmitPlugin(/\.s[ac]ss$/),
     new MiniCssExtractPlugin({ filename: 'bundle.css' }),
     // new ManifestPlugin({ fileName: 'manifest.json' }),
