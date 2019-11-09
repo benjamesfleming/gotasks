@@ -1,5 +1,6 @@
 <script>
 import * as moment from 'moment'
+import TaskTable from '~/components/DashboardTaskTable'
 import { UserObject } from '~/utils/auth'
 import { User } from '~/models'
 
@@ -19,7 +20,7 @@ $: u = new User($UserObject)
 
     <div class="w-full px-6">
 
-        <div class="toolbar flex justify-between">
+        <div class="toolbar h-12 mb-2 flex justify-between">
             <div class="toolbar-input-group">
                 <span><input type="text" /></span>
                 <i class="fas fa-search"></i>
@@ -30,35 +31,26 @@ $: u = new User($UserObject)
             </a>
         </div>
 
-        <div class="toolbar flex justify-start my-6">
+        <div class="toolbar my-4 flex justify-start">
             <button class="mx-6 ml-0">ALL</button>
             <button class="mx-6">DUE TODAY</button>
             <button class="mx-6 mr-0">REPEATING</button>
         </div>
 
-        <table class="w-full overflow-hidden rounded shadow-md transition-all hover:shadow-lg">
-            <tbody>
-            {#await u.tasks then tasks}
-                {#each tasks as task}
-                <tr class="bg-gray-200 odd:bg-gray-300 opacity-75 hover:opacity-100">
-                    <td class="p-3">{task.id}</td>
-                    <td class="p-3">{task.title}</td>
-                    <td class="p-3">{task.isCompleted ? "true" : "false"}</td>
-                    <td class="p-3">{task.streak}</td>
-                    <td class="p-3">
-                        <a href="/#/app/tasks/{task.id}/edit">Edit</a>
-                        <span>
-                            <input type="checkbox" checked={task.isCompleted}/>
-                        </span>
-                    </td>
-                </tr>
-                {:else}
-                <tr class="p-3 bg-gray-200 odd:bg-gray-300">
-                    <td class="p-3" colspan="5">No Tasks Found... <a href="/#/app/tasks/create">Create One</a></td>
-                </tr>
-                {/each}
-            {/await}
-            </tbody>
-        </table>
+        {#await u.tasks then tasks}
+            
+            <TaskTable tasks={tasks}/>
+
+            <hr class="h-1 my-6 bg-gray-300 shadow-sm rounded"/>
+
+            {#if tasks.filter(t => t.isCompleted).length > 0}
+                <TaskTable tasks={tasks.filter(t => t.isCompleted)}/>
+            {:else}
+                <div class="max-w-lg mx-auto py-12 flex items-center justify-center">
+                    <img class="max-w-xs pr-12 drop-shadow-md hover:drop-shadow-lg transition-all" src="/assets/images/undraw_void.svg" alt="Kiwi standing on oval">
+                    <p class="text-4xl text-center font-extrabold text-gray-800">COMPLETE TASKS TO SEE THEM HERE</p>
+                </div>
+            {/if}
+        {/await}
     </div>
 </div>
