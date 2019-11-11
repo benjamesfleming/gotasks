@@ -31,25 +31,9 @@ jobs:
         export CGO_ENABLED=1
         rice embed-go
         go build -o build/gotasks-linux-x64 server.go
-    
-    - name: Build for windows
-      run: |
-        export PATH=${PATH}:`go env GOPATH`/bin
-        export CGO_ENABLED=1
-        sudo apt-get update
-        sudo apt-get install gcc-multilib
-        sudo apt-get install gcc-mingw-w64
-        rice embed-go
-        GOOS=windows GOARCH=386 CGO_ENABLED=1 CXX_FOR_TARGET=i686-w64-mingw32-g++ CC_FOR_TARGET=i686-w64-mingw32-gcc go build -o build/gotasks-win64.exe server.go
-      
-    - name: Upload linux artifact
+        
+    - name: Upload
       uses: actions/upload-artifact@v1.0.0
       with:
         name: gotasks-linux-x64
         path: build/gotasks-linux-x64
-        
-    - name: Upload windows artifact
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: gotasks-win64
-        path: build/gotasks-win64.exe  
