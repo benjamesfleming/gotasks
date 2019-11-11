@@ -50,6 +50,7 @@ func main() {
 	// Load the database
 	db, err := gorm.Open(envy.Get("DB_TYPE", ""), envy.Get("DB_CONNECTION", ""))
 	if err != nil {
+		panic(err)
 		panic("failed to connect database")
 	}
 	defer db.Close()
