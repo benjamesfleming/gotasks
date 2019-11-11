@@ -36,8 +36,10 @@ jobs:
       run: |
         export PATH=${PATH}:`go env GOPATH`/bin
         export CGO_ENABLED=1
+        apt-get install gcc-multilib
+        apt-get install gcc-mingw-w64
         rice embed-go
-        GOOS=windows GOARCH=386 go build -o build/gotasks-win64.exe server.go
+        GOOS=windows GOARCH=386 CGO_ENABLED=1 CXX_FOR_TARGET=i686-w64-mingw32-g++ CC_FOR_TARGET=i686-w64-mingw32-gcc go build -o build/gotasks-win64.exe server.go
       
     - name: Upload linux artifact
       uses: actions/upload-artifact@v1.0.0
