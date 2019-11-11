@@ -27,11 +27,13 @@ jobs:
 
     - name: Build for linux
       run: |
+        export PATH=${PATH}:`go env GOPATH`/bin
         rice embed-go
         go build -o build/gotasks-linux-x64 server.go
     
     - name: Build for windows
       run: |
+        export PATH=${PATH}:`go env GOPATH`/bin
         rice embed-go
         GOOS=windows GOARCH=386 go build -o build/gotasks-win64.exe server.go
       
