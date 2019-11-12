@@ -1,4 +1,6 @@
 import { derived } from 'svelte/store'
+import { navigateTo } from 'svero'
+import { get } from '~/utils/api'
 import { createWritableStore, getStoreValue } from '~/utils/store'
 
 export const UserObject = createWritableStore('user', '').useLocalStorage()
@@ -52,4 +54,16 @@ export async function onAuthorized (privileges=[], { onSuccess, onFailure }) {
     return (
         ok ? onSuccess() : onFailure()
     )
+}
+
+/**
+ * Reauthenticate
+ * check that the user is authenticated by calling the server
+ */
+export async function reAuthenticate () {
+    const [, err] = await get('/auth/user', {}, '')
+    if (err != null) {
+        UserObject.set(null)
+        navigateTo('/#/')
+    }
 }

@@ -66,8 +66,7 @@ export async function __fetch(path, { headers, ...options }, prefix='') {
     switch (response.status) {
         // 401 Unauthorized
         case 401:
-            UserObject.set(null)
-            navigateTo('/')
+            return [null, { code: 401, all: (await response.json()) }]
             break
 
         // 400 Bad Request
