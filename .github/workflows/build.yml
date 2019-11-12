@@ -1,5 +1,10 @@
 name: Test, Build & Publish
-on: [push]
+
+on: 
+  push:
+    branches:
+      - master
+
 jobs:
 
   build:
