@@ -9,7 +9,8 @@ export let fadeIn = true
 }
 
 .modal {
-    width: 30%;
+    width: 90%;
+    max-width: 400px;
     min-width: 320px;
 }
 </style>
