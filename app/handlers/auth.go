@@ -22,6 +22,9 @@ func AuthRegisterHandler(e echo.Context) error {
 	user.IsAdmin = false
 	user.ProviderID = nulls.NewString(tkn.ID)
 	user.Avatar = tkn.Picture
+	user.Tasks = []models.Task{
+		models.Task{Title: "My First Task... Yay!", Note: "Complete this to get started on your productive adventure.", Tags: "first-task, easy"},
+	}
 
 	if err := user.Validate(); err != nil {
 		return e.JSON(400, err)
