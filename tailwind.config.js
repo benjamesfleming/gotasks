@@ -12,6 +12,9 @@ module.exports = {
       },
       maxWidth: {
         ..._t.spacing,
+      },
+      maxHeight: {
+        ..._t.spacing,
       }
     }
   },
