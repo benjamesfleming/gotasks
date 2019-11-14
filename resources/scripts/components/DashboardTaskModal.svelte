@@ -1,5 +1,6 @@
 <script>
 import { createEventDispatcher } from 'svelte'
+import { AuthObject as u } from '~/utils/auth'
 import Modal from '~/components/Modal'
 
 const dispatch = createEventDispatcher()
@@ -53,8 +54,13 @@ let onTagRemove = idx => {
 
 // On Continue Click
 // validate the given data then submit to the api
-let onContinueClick = () => {
-    console.log({ title, note, tags, steps })
+let onContinueClick = async () => {
+    let [ok, err] = await u.createTask({ title, note, tags: tags.join(", "), steps: steps.map(s => ({ title: s })) })
+    if (err != null && Object.keys(err.all || {}).length > 0) {
+        errors = err.all
+    } else {
+        dispatch('close')
+    }
 }
 
 // On Clear Error
@@ -87,6 +93,7 @@ let onClearError = key => {
         -->
     <label class="block px-2 pb-2 bg-white overflow-hidden">
         <span class="text-gray-700">Task Title</span>
+        {#if errors.title}<span class="block text-sm text-red-500">*{errors.title}</span>{/if}
         <input class="form-input mt-1 block w-full {errors.title ? 'border-red-500' : ''}" placeholder="My New Task Title" bind:value={title} on:focus={() => onClearError('title')}>
     </label>
 
@@ -97,6 +104,7 @@ let onClearError = key => {
         <span class="vis-selector text-gray-700 flex items-center justify-between cursor-pointer" on:click={() => show.note = !show.note}>
             Descriptive Note <i class="fas fa-chevron-circle-{show.note ? 'up' : 'down'} transition-all"></i>
         </span>
+        {#if errors.note}<span class="block text-sm text-red-500">*{errors.note}</span>{/if}
         <div class="{show.note ? 'max-h-full' : 'max-h-0'} transition-all">
             <textarea class="form-textarea mt-1 block w-full h-24 resize-none {errors.note ? 'border-red-500' : ''}" placeholder="..." disabled={!show.note} bind:value={note} on:focus={() => onClearError('note')}></textarea>
         </div>
