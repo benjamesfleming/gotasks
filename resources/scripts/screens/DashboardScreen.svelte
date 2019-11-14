@@ -6,7 +6,7 @@ import { AuthObject as u } from '~/utils/auth'
 
 u.loadTasks()
 
-let taskModal = true
+let taskModal = false
 </script>
 
 {#if taskModal}
