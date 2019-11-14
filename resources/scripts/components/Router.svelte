@@ -2,8 +2,8 @@
 import { Router, Route } from 'svero'
 
 import { IsRegistered, IsAdmin } from '~/utils/auth'
+import Navigation from '~/components/Navigation'
 
-import AdminScreen from '~/screens/AdminScreen'
 import AuthCompleteScreen from '~/screens/AuthCompleteScreen'
 import AuthLogoutScreen from '~/screens/AuthLogoutScreen'
 import NotFoundScreen from '~/screens/NotFoundScreen'
@@ -12,18 +12,20 @@ import WelcomeScreen from '~/screens/WelcomeScreen'
 import DashboardScreen from '~/screens/DashboardScreen'
 </script>
 
-<Router>
-    <Route fallback path="*" component={NotFoundScreen} />
+<Router path="#">
+    <Route exact>
+        <Navigation/>
+        <WelcomeScreen/>
+    </Route>
+    <Route exact path="/error" component={ErrorScreen} />
+
+    <Route exact path="/auth-complete" component={AuthCompleteScreen} />
+    <Route exact path="/auth-logout" component={AuthLogoutScreen} />
     
-    <Route exact path="#/" component={WelcomeScreen} />
-    <Route exact path="#/error" component={ErrorScreen} />
-
-    <Route exact path="#/auth-complete" component={AuthCompleteScreen} />
-    <Route exact path="#/auth-logout" component={AuthLogoutScreen} />
-
-    <Route exact path="#/admin" component={AdminScreen} condition={$IsAdmin} redirect="#/" />
-
-    <Router exact path="#/app" condition={$IsRegistered} redirect="#/" nofallback>
-        <Route exact component={DashboardScreen} />
-    </Router>
+    <Route exact path="/app" condition={$IsRegistered} redirect="#/">
+        <Navigation/>
+        <DashboardScreen/>
+    </Route>
+    
+    <Route fallback path="*" component={NotFoundScreen} />
 </Router>
