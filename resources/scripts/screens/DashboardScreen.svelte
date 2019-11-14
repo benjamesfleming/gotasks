@@ -1,10 +1,17 @@
 <script>
 import * as moment from 'moment'
+import TaskModal from '~/components/DashboardTaskModal'
 import TaskTable from '~/components/DashboardTaskTable'
 import { AuthObject as u } from '~/utils/auth'
 
 u.loadTasks()
+
+let taskModal = true
 </script>
+
+{#if taskModal}
+<TaskModal on:close={() => taskModal = false}/>
+{/if}
 
 <div class="container mx-auto mt-6">
 
@@ -25,7 +32,7 @@ u.loadTasks()
                 <i class="fas fa-search"></i>
             </div>
 
-            <a class="button" href="#/app/tasks/create">
+            <a class="button my-3" href="#/app" on:click={() => taskModal = true}>
                 <i class="fas fa-plus"></i> Add
             </a>
         </div>
