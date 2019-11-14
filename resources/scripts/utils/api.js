@@ -1,6 +1,4 @@
 import * as Cookie from 'js-cookie'
-import { navigateTo } from 'svero'
-import { UserObject } from '~/utils/auth'
 
 /**
  * Post
@@ -10,7 +8,7 @@ import { UserObject } from '~/utils/auth'
  * @param {object} options 
  * @param {string} prefix
  */
-export async function post(path, body, { headers, ...options }, prefix='/api') {
+export async function post(path, body, { headers, ...options }={}, prefix='/api') {
    return __fetch(
         path, {
             method: 'POST',
