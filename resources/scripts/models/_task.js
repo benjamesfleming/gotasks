@@ -31,6 +31,7 @@ export class Task {
     }
 
     // Get the completion status based on the data
+    set isCompleted (value) { this.completed = value ? moment().toISOString() : "0001-01-01T00:00:00Z" }
     get isCompleted () {
         return !moment(this.completed).isBefore('1970-01-01', 'year')
     }
