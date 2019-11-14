@@ -57,7 +57,6 @@ func TaskCreateHandler(e echo.Context) error {
 		return e.JSON(400, err)
 	}
 
-	task.ID = 0
 	task.UserID = e.Get("User").(*models.User).ID
 	if err := task.Validate(); err != nil {
 		return e.JSON(400, err)

@@ -4,25 +4,38 @@ import (
 	"time"
 
 	v "github.com/go-ozzo/ozzo-validation"
+	"github.com/gobuffalo/nulls"
+	"github.com/gofrs/uuid"
 	"github.com/jinzhu/gorm"
 )
 
 // Task ...
 type Task struct {
-	gorm.Model
-	UserID    uint
-	ParentID  uint
+	ID        uuid.UUID `gorm:"type:uuid;primary_key;"`
+	UserID    uuid.UUID `gorm:"type:uuid;not null;"`
+	ParentID  uuid.UUID `gorm:"type:uuid;not null;"`
 	Title     string
 	Tags      string
 	Note      string
-	Completed time.Time
+	Completed nulls.Time
 	Streak    uint
 	Parent    *Task
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+// BeforeCreate will set a UUID rather than numeric ID.
+func (t *Task) BeforeCreate(scope *gorm.Scope) error {
+	uuid, err := uuid.NewV4()
+	if err != nil {
+		return err
+	}
+	return scope.SetColumn("ID", uuid)
 }
 
 // IsEmpty checks if the task struct has been successfully created
 func (t Task) IsEmpty() bool {
-	return t.ID == 0
+	return t.ID == uuid.Nil
 }
 
 // Validate checks if the task struct is vaild, then creates them
