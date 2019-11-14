@@ -1,9 +1,9 @@
 <script>
 import { onMount } from 'svelte'
 import { navigateTo } from 'svero'
-import { UserObject } from '~/utils/auth'
-import { get, post } from '~/utils/api'
 import { User } from '~/models'
+import { AuthObject } from '~/utils/auth'
+import { get, post } from '~/utils/api'
 
 let currentUser
 let validationErrors
@@ -13,9 +13,7 @@ let onComplete = async () => {
     let hasErrors = (error != null && error.code != null)
 
     if (!hasErrors) {
-        UserObject.set(
-            User.fromApi(returnedUser)
-        )
+        AuthObject.fromApi(returnedUser)
         navigateTo('/#/app')
     } else {
         validationErrors = Object.keys(error.all).map(k => `${k}: ${error.all[k]}!`)
@@ -28,13 +26,11 @@ onMount(async function () {
 
     if (isRegistered) {
         let [returnedUser] = await get('/auth/me', {}, '')
-        UserObject.set(
-            User.fromApi(returnedUser)
-        )
+        AuthObject.fromApi(returnedUser)
         navigateTo('/#/app')
     } else {
         currentUser = User.fromProvider(providedUser)
-        UserObject.set(
+        AuthObject.set(
             currentUser
         )
     }

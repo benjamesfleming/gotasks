@@ -1,7 +1,6 @@
 package models
 
 import (
-	"errors"
 	"time"
 
 	v "github.com/go-ozzo/ozzo-validation"
@@ -10,21 +9,19 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// Task ...
-type Task struct {
+// Step ...
+type Step struct {
 	ID        uuid.UUID `gorm:"type:uuid;primary_key;"`
-	UserID    uuid.UUID `gorm:"type:uuid;not null;"`
+	TaskID    uuid.UUID `gorm:"type:uuid;not null;"`
 	Title     string
-	Tags      string
-	Note      string
 	Completed nulls.Time
+	Parent    *Task
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Steps     []Step
 }
 
 // BeforeCreate will set a UUID rather than numeric ID.
-func (t *Task) BeforeCreate(scope *gorm.Scope) error {
+func (s *Step) BeforeCreate(scope *gorm.Scope) error {
 	uuid, err := uuid.NewV4()
 	if err != nil {
 		return err
@@ -33,20 +30,14 @@ func (t *Task) BeforeCreate(scope *gorm.Scope) error {
 }
 
 // IsEmpty checks if the task struct has been successfully created
-func (t Task) IsEmpty() bool {
-	return t.ID == uuid.Nil
+func (s Step) IsEmpty() bool {
+	return s.ID == uuid.Nil
 }
 
 // Validate checks if the task struct is vaild, then creates them
-func (t Task) Validate() error {
-	for _, step := range t.Steps {
-		if err := step.Validate(); err != nil {
-			return errors.New("steps are invalid")
-		}
-	}
-
-	return v.ValidateStruct(&t,
-		v.Field(&t.UserID, v.Required),
-		v.Field(&t.Title, v.Required, v.Length(1, 64)),
+func (s Step) Validate() error {
+	return v.ValidateStruct(&s,
+		v.Field(&s.TaskID, v.Required),
+		v.Field(&s.Title, v.Required, v.Length(1, 64)),
 	)
 }

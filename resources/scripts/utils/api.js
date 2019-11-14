@@ -1,6 +1,5 @@
 import * as Cookie from 'js-cookie'
-import { navigateTo } from 'svero'
-import { UserObject } from '~/utils/auth'
+import { camelCase } from 'lodash'
 
 /**
  * Post
@@ -10,7 +9,7 @@ import { UserObject } from '~/utils/auth'
  * @param {object} options 
  * @param {string} prefix
  */
-export async function post(path, body, { headers, ...options }, prefix='/api') {
+export async function post(path, body, { headers, ...options }={}, prefix='/api') {
    return __fetch(
         path, {
             method: 'POST',
@@ -51,7 +50,7 @@ export async function get(path, options={}, prefix='/api') {
  * @returns {array} [data, errors]
  */
 export async function __fetch(path, { headers, ...options }, prefix='') {
-    const response = await fetch(
+    let response = await fetch(
         prefix + path,
         { 
             headers: {
@@ -66,18 +65,17 @@ export async function __fetch(path, { headers, ...options }, prefix='') {
     switch (response.status) {
         // 401 Unauthorized
         case 401:
-            UserObject.set(null)
-            navigateTo('/')
+            response = [null, { code: 401, all: (await response.json()) }]
             break
 
         // 400 Bad Request
         case 400:
-            return [null, { code: 400, all: (await response.json()) }]
+            response = [null, { code: 400, all: (await response.json()) }]
             break
 
         // 200 Success
         case 200:
-            return [(await response.json()), null]
+            response = [(await response.json()), null]
             break
 
         // Default
@@ -85,4 +83,12 @@ export async function __fetch(path, { headers, ...options }, prefix='') {
             throw new Error(`[GOTASKS] ERROR - Failed to fetch api \`${prefix}${path}\`. \n ${response.status} ${response.statusText}`)
             break
     }
+
+    if (response[1] != null) {
+        let errors = response[1].all || {}
+        response[1].all = Object.keys(errors)
+            .reduce((r,v) => r = ({ ...r, [camelCase(v)]: errors[v] }), {})
+    }
+
+    return response
 }

@@ -1,15 +1,14 @@
 import * as moment from 'moment'
 
 export class Task {
-    constructor({ id, userId, parentId, title, tags, note, completed, streak, createdAt, updatedAt }) {
+    constructor({ id, userId, title, tags, steps, note, completed, createdAt, updatedAt }) {
         this.id             = id
         this.userId         = userId
-        this.parentId       = parentId
         this.title          = title
         this.tags           = tags
+        this.steps          = steps
         this.note           = note
         this.completed      = completed
-        this.streak         = streak
         this.createdAt      = createdAt
         this.updatedAt      = updatedAt
     }
@@ -19,19 +18,19 @@ export class Task {
         return new Task({
             id              : u["ID"],
             userId          : u["UserID"],
-            parentId        : u["ParentID"],
             title           : u["Title"],
             tags            : u["Tags"],
+            steps           : u["Steps"],
             note            : u["Note"],
             completed       : u["Completed"],
-            streak          : u["Streak"],
             createdAt       : u["CreatedAt"],
             updatedAt       : u["UpdatedAt"]
         })
     }
 
     // Get the completion status based on the data
+    set isCompleted (value) { this.completed = value ? moment().toISOString() : "0001-01-01T00:00:00Z" }
     get isCompleted () {
-        return !moment(this.completed).isBefore('1970-01-01', 'year')
+        return this.completed != null && !moment(this.completed).isBefore('1970-01-01', 'year')
     }
 }

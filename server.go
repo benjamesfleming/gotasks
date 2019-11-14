@@ -50,13 +50,14 @@ func main() {
 	// Load the database
 	db, err := gorm.Open(envy.Get("DB_TYPE", ""), envy.Get("DB_CONNECTION", ""))
 	if err != nil {
+		e.Logger.Errorf("failed to connect to database")
 		panic(err)
-		panic("failed to connect database")
 	}
 	defer db.Close()
 
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Task{})
+	db.AutoMigrate(&models.Step{})
 
 	// Load the rice boxes
 	assetsBox := rice.MustFindBox("public").HTTPBox()

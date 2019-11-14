@@ -2,6 +2,8 @@
 @import "./fontawesome/brands";
 @import "./fontawesome/solid";
 
+@import "./animate";
+
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
@@ -15,6 +17,15 @@ body {
 
 .container {
     @apply flex;
+}
+
+.form-button {
+    @extend %button;
+    @apply mt-6 py-2 bg-blue-500 text-white float-right;
+
+    &:hover {
+        @apply bg-blue-200 text-gray-800;
+    }
 }
 
 @responsive {

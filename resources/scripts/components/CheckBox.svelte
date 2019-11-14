@@ -2,6 +2,12 @@
 /**
  *  @see https://codepen.io/daniandl/pen/OgbXzK 
  */
+
+import { createEventDispatcher } from 'svelte';
+
+const dispatch = createEventDispatcher();
+
+export let checked = false;
 </script>
 
 <style lang="postcss">
@@ -21,28 +27,12 @@
   justify-content: center;
   transition: border 0.3s ease;
 }
-.label__check i.icon {
-  opacity: 0.2;
-  font-size: calc(1rem + 1vw);
-  color: transparent;
-  transition: opacity 0.3s 0.1s ease;
-  -webkit-text-stroke: 3px rgba(0, 0, 0, 0.5);
-}
 .label__check:hover {
   border: 5px solid rgba(0, 0, 0, 0.2);
 }
-.label__checkbox:checked + .label__text .label__check {
+.label__checkbox.checked + .label__text .label__check {
   -webkit-animation: check 0.5s cubic-bezier(0.895, 0.03, 0.685, 0.22) forwards;
           animation: check 0.5s cubic-bezier(0.895, 0.03, 0.685, 0.22) forwards;
-}
-.label__checkbox:checked + .label__text .label__check .icon {
-  opacity: 1;
-  -webkit-transform: scale(0);
-          transform: scale(0);
-  color: white;
-  -webkit-text-stroke: 0;
-  -webkit-animation: icon 0.3s cubic-bezier(1, 0.008, 0.565, 1.65) 0.1s 1 forwards;
-          animation: icon 0.3s cubic-bezier(1, 0.008, 0.565, 1.65) 0.1s 1 forwards;
 }
 @-webkit-keyframes icon {
   from {
@@ -142,7 +132,7 @@
 
 <div class="h-8 w-full flex items-center justify-center">
     <label class="label">
-        <input  class="label__checkbox" type="checkbox"/>
+        <input class={"label__checkbox " + (checked ? "checked" : "")} type="checkbox" on:change={() => dispatch('change')}/>
         <span class="label__text">
             <span class="label__check">
                 <i class="fas fa-check"></i>

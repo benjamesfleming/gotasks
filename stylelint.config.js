@@ -7,7 +7,8 @@ module.exports = {
         'apply',
         'variants',
         'responsive',
-        'screen'
+        'screen',
+        'extend'
       ]
     }],
     'declaration-block-trailing-semicolon': null,

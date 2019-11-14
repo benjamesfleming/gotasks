@@ -1,20 +1,26 @@
 <script>
 import * as moment from 'moment'
+import TaskModal from '~/components/DashboardTaskModal'
 import TaskTable from '~/components/DashboardTaskTable'
-import { UserObject } from '~/utils/auth'
-import { User } from '~/models'
+import { AuthObject as u } from '~/utils/auth'
 
-$: u = new User($UserObject)
+u.loadTasks()
+
+let taskModal = false
 </script>
+
+{#if taskModal}
+<TaskModal on:close={() => taskModal = false}/>
+{/if}
 
 <div class="container mx-auto mt-6">
 
     <div class="max-w-xs px-6">
-        <img class="rounded-lg shadow-md mb-6 transition-all hover:shadow-lg" src="{u.avatar}" alt="{u.fullName}'s Profile Picture"/>
+        <img class="rounded-lg shadow-md mb-6 transition-all hover:shadow-lg" src="{$u.avatar}" alt="{$u.fullName}'s Profile Picture"/>
         <div class="user-info">
-            <h1 class="text-4xl">{u.fullName}</h1>
-            <p>{u.email}</p>
-            <small>Joined {moment(u.createdAt).format('Do MMM YY')}</small>
+            <h1 class="text-4xl">{$u.fullName}</h1>
+            <p>{$u.email}</p>
+            <small>Joined {moment($u.createdAt).format('Do MMM YY')}</small>
         </div>
     </div>
 
@@ -26,7 +32,7 @@ $: u = new User($UserObject)
                 <i class="fas fa-search"></i>
             </div>
 
-            <a class="button" href="#/app/tasks/create">
+            <a class="button my-3" href="#/app" on:click={() => taskModal = true}>
                 <i class="fas fa-plus"></i> Add
             </a>
         </div>
@@ -37,20 +43,26 @@ $: u = new User($UserObject)
             <button class="mx-6 mr-0">REPEATING</button>
         </div>
 
-        {#await u.tasks then tasks}
-            
-            <TaskTable tasks={tasks}/>
+        {#if $u.tasks}
+            <TaskTable filter={t => !t.isCompleted}>
+                <div class="max-w-lg mx-auto py-12 flex items-center justify-center">
+                    <img class="max-w-xs pr-12 drop-shadow-md hover:drop-shadow-lg transition-all" src="/assets/images/undraw_completed.svg" alt="Kiwi standing on oval">
+                    <p class="text-3xl text-center font-extrabold text-gray-800">
+                        WOO-HOO!!!<br/>YOU ARE UP TO DATE
+                    </p>
+                </div>
+            </TaskTable>
 
             <hr class="h-1 my-6 bg-gray-300 shadow-sm rounded"/>
 
-            {#if tasks.filter(t => t.isCompleted).length > 0}
-                <TaskTable tasks={tasks.filter(t => t.isCompleted)}/>
-            {:else}
+            <TaskTable filter={t => t.isCompleted}>
                 <div class="max-w-lg mx-auto py-12 flex items-center justify-center">
                     <img class="max-w-xs pr-12 drop-shadow-md hover:drop-shadow-lg transition-all" src="/assets/images/undraw_void.svg" alt="Kiwi standing on oval">
-                    <p class="text-4xl text-center font-extrabold text-gray-800">COMPLETE TASKS TO SEE THEM HERE</p>
+                    <p class="text-3xl text-center font-extrabold text-gray-800">
+                        COMPLETE TASKS TO SEE THEM HERE
+                    </p>
                 </div>
-            {/if}
-        {/await}
+            </TaskTable>
+        {/if}
     </div>
 </div>
