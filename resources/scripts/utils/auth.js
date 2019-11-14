@@ -1,16 +1,16 @@
 import { derived } from 'svelte/store'
 import { navigateTo } from 'svero'
+import { createUserStore, getStoreValue } from '~/store'
 import { get } from '~/utils/api'
-import { createWritableStore, getStoreValue } from '~/utils/store'
 
-export const UserObject = createWritableStore('user', '').useLocalStorage()
+export const AuthObject = createUserStore({}, {}, true)
 
 /**
  * Is Authenticated
  * true / false, is the user currently logged in
  */
 export const IsAuthenticated = derived(
-    UserObject, $User => $User != null && $User.id != null
+    AuthObject, $User => $User != null && $User.id != null
 )
 
 /**
@@ -18,7 +18,7 @@ export const IsAuthenticated = derived(
  * true / fase, is the logged in user registered
  */
 export const IsRegistered = derived(
-    [UserObject, IsAuthenticated], ([$User, $IsAuthenticated]) => $IsAuthenticated && ($User != null && $User.isRegistered)
+    [AuthObject, IsAuthenticated], ([$User, $IsAuthenticated]) => $IsAuthenticated && ($User != null && $User.isRegistered)
 )
 
 /**
@@ -26,7 +26,7 @@ export const IsRegistered = derived(
  * true / fase, is the logged in user an admin
  */
 export const IsAdmin = derived(
-    [UserObject, IsAuthenticated], ([$User, $IsAuthenticated]) => $IsAuthenticated && ($User != null && $User.isAdmin)
+    [AuthObject, IsAuthenticated], ([$User, $IsAuthenticated]) => $IsAuthenticated && ($User != null && $User.isAdmin)
 )
 
 /**
@@ -35,7 +35,7 @@ export const IsAdmin = derived(
  * @param {string} privilege 
  */
 export async function hasPrivilege (privilege='') {
-    const { privileges } = await getStoreValue(UserObject)
+    const { privileges } = await getStoreValue(AuthObject)
     if (Array.from(privileges || []).indexOf(privilege) > -1) {
         return true
     }
@@ -63,7 +63,7 @@ export async function onAuthorized (privileges=[], { onSuccess, onFailure }) {
 export async function reAuthenticate () {
     const [, err] = await get('/auth/user', {}, '')
     if (err != null) {
-        UserObject.set(null)
+        AuthObject.set(null)
         navigateTo('/#/')
     }
 }
