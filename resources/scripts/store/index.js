@@ -1,5 +1,7 @@
 import { writable } from 'svelte/store'
 
+export * from './_user'
+
 /**
  * Create Writable Store
  * wraps `svelte/store` to add  a local storage backend
@@ -8,14 +10,14 @@ import { writable } from 'svelte/store'
  * @param {*} startValue 
  */
 export function createWritableStore (key, startValue) {
-    const { subscribe, set } = writable(startValue)
+    const { subscribe, set, update } = writable(startValue)
   
 	return {
-        subscribe, set,
-        useLocalStorage: () => {
+        subscribe, set, update,
+        useLocalStorage (mutator=v=>v) {
             const json = localStorage.getItem(key);
             if (json) {
-                set(JSON.parse(json).data)
+                set(mutator(JSON.parse(json).data))
             }
             
             subscribe(current => {
@@ -25,7 +27,7 @@ export function createWritableStore (key, startValue) {
                     : localStorage.removeItem(key)
             })
 
-            return { subscribe, set }
+            return { subscribe, set, update }
         }
     }
 }
