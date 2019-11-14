@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"html/template"
-	"io"
 	"net/http"
 	"time"
 
@@ -22,25 +20,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
-
-var templatePath = "resources/views"
-var assetPath = "public"
-
-// TemplateRenderer is a custom html/template renderer for Echo framework
-type TemplateRenderer struct {
-	templates *template.Template
-}
-
-// Render renders a template document
-func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-
-	// Add global methods if data is a map
-	if viewContext, isMap := data.(map[string]interface{}); isMap {
-		viewContext["reverse"] = c.Echo().Reverse
-	}
-
-	return t.templates.ExecuteTemplate(w, name, data)
-}
 
 func main() {
 	// Echo instance
@@ -61,6 +40,7 @@ func main() {
 
 	// Load the rice boxes
 	assetsBox := rice.MustFindBox("public").HTTPBox()
+	rice.MustFindBox("resources/views")
 
 	// Create auth service with providers
 	service := auth.NewService(
@@ -133,11 +113,6 @@ func main() {
 
 	// Add error handling
 	echo.NotFoundHandler = h.HomeHandler
-
-	// Implement the template renderer
-	e.Renderer = &TemplateRenderer{
-		templates: template.Must(template.ParseGlob(templatePath + "/*.html")),
-	}
 
 	// Start server
 	e.Logger.Fatal(e.Start(":" + envy.Get("PORT", "3000")))
