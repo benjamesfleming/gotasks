@@ -41,3 +41,9 @@ func (p *TaskPolicy) CanShow(t *models.Task) bool {
 func (p *TaskPolicy) CanCreate() bool {
 	return true
 }
+
+// CanUpdate validates if the current user is allowed to
+// update the requested task
+func (p *TaskPolicy) CanUpdate(t *models.Task) bool {
+	return p.User.IsAdmin || (p.User.ID == t.UserID)
+}
