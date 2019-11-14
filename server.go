@@ -57,6 +57,7 @@ func main() {
 
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Task{})
+	db.AutoMigrate(&models.Step{})
 
 	// Load the rice boxes
 	assetsBox := rice.MustFindBox("public").HTTPBox()
