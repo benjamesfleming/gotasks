@@ -1,8 +1,12 @@
 import * as moment from 'moment';
+import { navigateTo } from 'svero';
 import App from '~/App';
 import { reAuthenticate } from '~/utils/auth';
 
 reAuthenticate();
+if (window.location.hash == "") {
+  navigateTo('/#/');
+}
 
 moment.updateLocale('en', {
     relativeTime: {
