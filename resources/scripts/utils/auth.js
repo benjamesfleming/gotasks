@@ -61,9 +61,11 @@ export async function onAuthorized (privileges=[], { onSuccess, onFailure }) {
  * check that the user is authenticated by calling the server
  */
 export async function reAuthenticate () {
-    const [, err] = await get('/auth/user', {}, '')
+    const [user, err] = await get('/auth/user', {}, '')
     if (err != null) {
         AuthObject.set(null)
         navigateTo('/#/')
+    } else if (user && user["attrs"]["registered"] == false) {
+        navigateTo('/#/auth-complete')
     }
 }
