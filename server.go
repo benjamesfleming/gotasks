@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	h "git.benfleming.nz/benfleming/gotasks/app/handlers"
@@ -19,12 +20,23 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"github.com/ziflex/lecho/v2"
 )
 
 func main() {
+	envy.Load()
+
 	// Echo instance
 	e := echo.New()
-	envy.Load()
+
+	// Init Logger
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
+	e.Logger = lecho.New(
+		zerolog.ConsoleWriter{Out: os.Stdout},
+		lecho.WithTimestamp(),
+	)
 
 	// Load the database
 	db, err := gorm.Open(envy.Get("DB_TYPE", ""), envy.Get("DB_CONNECTION", ""))
@@ -79,7 +91,7 @@ func main() {
 	// isTraced := echo.WrapMiddleware(m.Trace)
 
 	// Middleware
-	e.Use(middleware.Logger())
+	// e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(echo.WrapMiddleware(m.Trace))
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -87,11 +99,9 @@ func main() {
 			user := new(models.User)
 			tkn, err := token.GetUserInfo(c.Request())
 
-			fmt.Print("\n\n\n")
-			fmt.Println("  Timestamp          : ", time.Now())
-			fmt.Println("  Request Path       : ", c.Request().URL.Path)
-			fmt.Println("  Authenticated User : ", tkn.Name, err)
-			fmt.Print("\n")
+			fmt.Println("----")
+			c.Logger().Infof("Request Path = %s", c.Request().URL.Path)
+			c.Logger().Infof("Auth User    = %s", tkn.Name)
 
 			if err == nil {
 				db.Where(&models.User{ProviderID: nulls.NewString(tkn.ID)}).First(&user)
