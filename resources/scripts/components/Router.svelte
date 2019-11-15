@@ -22,7 +22,7 @@ import DashboardScreen from '~/screens/DashboardScreen'
     <Route exact path="/auth-complete" component={AuthCompleteScreen} />
     <Route exact path="/auth-logout" component={AuthLogoutScreen} />
     
-    <Route exact path="/app" condition={$IsRegistered} redirect="#/">
+    <Route exact path="/app" condition={() => $IsRegistered} redirect="#/">
         <Navigation/>
         <DashboardScreen/>
     </Route>
