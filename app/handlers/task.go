@@ -25,7 +25,7 @@ func TaskListHandler(e echo.Context) error {
 	tasks := new([]models.Task)
 
 	db := e.Get("Database").(*gorm.DB)
-	db.Find(&tasks)
+	db.Preload("Steps").Find(&tasks)
 
 	return e.JSON(200, tasks)
 }
@@ -37,7 +37,7 @@ func TaskShowHandler(e echo.Context) error {
 	task := new(models.Task)
 
 	db := e.Get("Database").(*gorm.DB)
-	db.Where("id = ?", id).First(&task)
+	db.Preload("Steps").Where("id = ?", id).First(&task)
 
 	if !p.NewTaskPolicy(e).CanShow(task) {
 		return e.JSON(401, errUnauthorized)

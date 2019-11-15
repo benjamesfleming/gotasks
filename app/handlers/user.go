@@ -48,17 +48,15 @@ func UserShowHandler(e echo.Context) error {
 func UserShowTasksHandler(e echo.Context) error {
 	id := e.Param("id")
 	user := new(models.User)
-	tasks := new([]models.Task)
 
 	db := e.Get("Database").(*gorm.DB)
-	db.Where("id = ?", id).First(&user)
-	db.Where("user_id = ?", id).Find(&tasks)
+	db.Preload("Tasks").Preload("Tasks.Steps").Where("id = ?", id).First(&user)
 
 	if !p.NewUserPolicy(e).CanShowTasks(user) {
 		return e.JSON(401, errUnauthorized)
 	}
 
-	return e.JSON(200, tasks)
+	return e.JSON(200, user.Tasks)
 }
 
 // UserCreateHandler handles the requests to create a new user
