@@ -7,7 +7,7 @@ import (
 
 // HomeHandler is a default handler
 // GET /
-func HomeHandler(c echo.Context) error {
-	indexHTML, _ := rice.MustFindBox("resources/views").String("index.html")
-	return c.HTML(200, indexHTML)
+func HomeHandler(e echo.Context) error {
+	indexHTML, _ := e.Get("TemplatesBox").(*rice.Box).String("index.html")
+	return e.HTML(200, indexHTML)
 }

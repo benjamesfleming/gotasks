@@ -40,7 +40,7 @@ func main() {
 
 	// Load the rice boxes
 	assetsBox := rice.MustFindBox("public").HTTPBox()
-	rice.MustFindBox("resources/views")
+	templatesBox := rice.MustFindBox("resources/views")
 
 	// Create auth service with providers
 	service := auth.NewService(
@@ -99,6 +99,7 @@ func main() {
 
 			c.Set("Database", db)
 			c.Set("User", user)
+			c.Set("TemplatesBox", templatesBox)
 
 			return next(c)
 		}
