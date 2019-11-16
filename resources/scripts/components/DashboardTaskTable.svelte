@@ -41,12 +41,19 @@ let onToggleSteps = id => {
 
 {#if $u.tasks.filter(filter).length > 0}
     <div class="w-full overflow-hidden rounded shadow-md transition-all hover:shadow-lg">
-        {#each $u.tasks.filter(filter) as task (task.id)}
-            <div class="flex justify-between items-center bg-gray-300 odd:bg-gray-400 cursor-pointer opacity-75 hover:opacity-80 transition-all" on:click={() => onToggleSteps(task.id)}>
+            <div class="opacity-75 hover:opacity-80 transition-all">
+                <div class="flex justify-between items-center bg-gray-400 cursor-pointer" on:click={() => onToggleSteps(task.id)}>
                 <div class="p-3 w-16">
                     <CheckBox checked={task.isCompleted} on:change={() => onToggle(task.id)}/>
                 </div>
-                <div class="p-3 flex-1">{task.title}</div>
+                    <div class="p-3 flex-1">
+                        <span>{task.title}</span>
+                        <div class="flex flex-wrap">
+                            {#each task.tags.split(',') as tag, idx}
+                                <div class="px-3 py-0 mt-1 mr-2 text-center text-xs bg-gray-300 rounded-sm shadow-md hover:shadow-lg transition-all" on:click={() => onTagRemove(idx)}>{tag}</div>
+                            {/each}
+                        </div>
+                    </div>
                 <div class="p-3 flex-1">
                     {task.isCompleted ? moment(task.completedAt).fromNow() : 'Incomplete'}
                 </div>
@@ -65,6 +72,7 @@ let onToggleSteps = id => {
                         </div> 
                     </div>
                 {/each}
+            </div>
             </div>
         {/each}
     </div>
