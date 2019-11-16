@@ -19,10 +19,17 @@ let showSteps = writable({})
 let onToggleSteps = id => {
     showSteps.set({ ...$showSteps, [id]: !($showSteps[id] || false) })
 }
+
+// On Step Toggle
+// toggles the completion of a given step
+let onStepToggle = (task, id) => {
+    u.toggleStep(task.id, id)
+}
 </script>
 
 <style lang="postcss">
-.step-list > .step {
+.step-list > .step,
+.step-list > .step > .step-title {
     position: relative;
 }
 
@@ -36,6 +43,17 @@ let onToggleSteps = id => {
     width: 1.5rem;
     height: 100%;
     transform: scaleY(1.5);
+}
+
+.step-list > .step > .custom-line-through::after {
+    @apply bg-gray-800;
+    content: "";
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    top: calc(50% - 1.5px);
+    height: 3px;
+    opacity: 0.8;
 }
 </style>
 
@@ -63,13 +81,13 @@ let onToggleSteps = id => {
                     </div>
                 </div>
                 <div class="step-list {$showSteps[task.id] ? 'max-h-full py-3' : 'max-h-0 py-0'} overflow-hidden transition-all bg-gray-300">
-                    {#each sortBy(task.steps, ['order']) as step, idx}
+                    {#each sortBy(task.steps, ['order']) as step, idx (step.id)}
                         <div class="step flex py-1">
                             <div class="flex justify-end w-16">
                                 <span class="text-center text-sm self-center">{idx +1} •</span>
                             </div>
-                            <div class="px-3">
-                                {step.title} <br/>
+                            <div class="step-title px-3 {step.isCompleted ? 'custom-line-through' : ''} cursor-pointer" on:click={() => onStepToggle(task, step.id)}>
+                                {step.title}
                             </div> 
                         </div>
                     {/each}

@@ -49,6 +49,19 @@ export function createUserStore (user, { tasks }, saveToLocalStorage = false) {
             update(u => new User({ ...u, tasks }))
         },
 
+        // Toggle Step, toggles the step of a task with the given id
+        // e.g. createUserStore(user).toggleStep(taskId, stepId)
+        async toggleStep (taskId, stepId) {
+            const { tasks } = await getStoreValue({ subscribe })
+            const task = tasks.find(t => t.id == taskId)
+            const step = task.steps.find(s => s.id == stepId)
+            if (step != null) {
+                step.isCompleted = !step.isCompleted
+                await post(`/tasks/${task.id}/steps/${step.id}`, step)
+            }
+            update(u => new User({ ...u, tasks }))
+        },
+
         // Create Task, create a new task with given data
         // e.g. createUserStore(user).createTask(task)
         async createTask (task) {
