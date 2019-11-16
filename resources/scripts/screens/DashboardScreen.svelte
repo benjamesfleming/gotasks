@@ -26,7 +26,7 @@ let taskModal = false
 
     <div class="w-full px-6">
 
-        <div class="toolbar h-12 mb-2 flex justify-between">
+        <div class="toolbar h-12 mb-6 flex justify-between">
             <div class="toolbar-input-group">
                 <span><input type="text" /></span>
                 <i class="fas fa-search"></i>
@@ -37,13 +37,7 @@ let taskModal = false
             </a>
         </div>
 
-        <div class="toolbar my-4 flex justify-start">
-            <button class="mx-6 ml-0">ALL</button>
-            <button class="mx-6">DUE TODAY</button>
-            <button class="mx-6 mr-0">REPEATING</button>
-        </div>
-
-        {#if $u.tasks}
+        {#if $u.tasks.length > 0}
             <TaskTable filter={t => !t.isCompleted} sort={(a, b) => moment(a.createdAt).isBefore(b.createdAt) ? 1 : -1}>
                 <div class="max-w-lg mx-auto py-12 flex items-center justify-center">
                     <img class="max-w-xs pr-12 drop-shadow-md hover:drop-shadow-lg transition-all" src="/assets/images/undraw_completed.svg" alt="Kiwi standing on oval">
@@ -63,6 +57,13 @@ let taskModal = false
                     </p>
                 </div>
             </TaskTable>
+        {:else}
+            <div class="mx-auto p-12 flex items-center justify-center">
+                <img class="max-w-md pr-12 drop-shadow-md hover:drop-shadow-lg transition-all" src="/assets/images/undraw_progress_tracking.svg" alt="Kiwi standing on oval">
+                <p class="text-4xl max-w-xl text-center font-extrabold text-gray-800">
+                    WHAT... NO TASKS?<br/> CREATE ONE TO GET STARTED
+                </p>
+            </div>
         {/if}
     </div>
 </div>
