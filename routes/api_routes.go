@@ -15,6 +15,7 @@ func RegisterAPIRoutes(e *echo.Echo, m ...echo.MiddlewareFunc) {
 	api.GET("/tasks/:id", h.TaskShowHandler)
 	api.POST("/tasks", h.TaskCreateHandler)
 	api.POST("/tasks/:id", h.TaskUpdateHandler)
+	api.POST("/tasks/:task_id/steps/:step_id", h.TaskStepUpdateHandler)
 
 	api.GET("/users", h.UserListHandler)
 	api.GET("/users/:id", h.UserShowHandler)

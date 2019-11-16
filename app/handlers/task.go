@@ -78,13 +78,11 @@ func TaskUpdateHandler(e echo.Context) error {
 	task := new(models.Task)
 	taskData := new(models.Task)
 
-	user := e.Get("User").(*models.User)
-
 	db := e.Get("Database").(*gorm.DB)
 	db.Where("id = ?", id).First(&task)
 
 	if !p.NewTaskPolicy(e).CanUpdate(task) {
-		e.Logger().Errorf("[401 Unauthorized] User [%s] Failed Policy Check For Task [%s]", user.ID, task.ID)
+		e.Logger().Errorf("[401 Unauthorized] User Failed Policy Check For Task [%s]", task.ID)
 		return e.JSON(401, errUnauthorized)
 	}
 
@@ -109,4 +107,45 @@ func TaskUpdateHandler(e echo.Context) error {
 	}
 
 	return e.JSON(200, task)
+}
+
+// TaskStepUpdateHandler handles the requests to update a tasks step
+// POST /tasks/:task_id/steps/:step_id
+func TaskStepUpdateHandler(e echo.Context) error {
+	taskID := e.Param("task_id")
+	stepID := e.Param("step_id")
+
+	task := new(models.Task)
+	step := new(models.Step)
+	stepData := new(models.Step)
+
+	db := e.Get("Database").(*gorm.DB)
+	db.Where("id = ?", taskID).First(&task)
+	db.Where("id = ?", stepID).First(&step)
+
+	if !p.NewTaskPolicy(e).CanUpdate(task) {
+		e.Logger().Errorf("[401 Unauthorized] User Failed Policy Check For Task [%s]", task.ID)
+		return e.JSON(401, errUnauthorized)
+	}
+
+	if err := e.Bind(stepData); err != nil {
+		e.Logger().Error("[400 Bad Request] Failed To Bind Step Request To Step Object", err)
+		return e.JSON(400, errBadRequest)
+	}
+
+	step.Title = stepData.Title
+	step.Order = stepData.Order
+	step.CompletedAt = stepData.CompletedAt
+
+	if err := step.Validate(); err != nil {
+		e.Logger().Error("[400 Bad Request] Failed To Validate The Step", err)
+		return e.JSON(400, err)
+	}
+
+	if err := db.Model(&step).Update(step).Error; err != nil {
+		e.Logger().Error("[500 Internal Server Error] Failed To Update The Step In The Database", err)
+		return e.JSON(500, err)
+	}
+
+	return e.JSON(200, step)
 }
