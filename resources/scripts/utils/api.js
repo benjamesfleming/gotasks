@@ -25,6 +25,23 @@ export async function post(path, body, { headers, ...options }={}, prefix='/api'
 }
 
 /**
+ * Delete
+ * sends the data to the api using the delete method
+ * @param {string} path 
+ * @param {object} options 
+ * @param {string} prefix 
+ */
+export async function del(path, options={}, prefix='/api') {
+    return __fetch(
+        path, {
+            method: 'DELETE',
+            ...options
+        },
+        prefix
+    )
+}
+
+/**
  * Get
  * sends data to the api using the get method
  * @param {string} path 
