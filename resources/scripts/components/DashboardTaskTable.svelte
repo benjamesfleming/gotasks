@@ -8,7 +8,10 @@ import CheckBox from '~/components/CheckBox'
 
 export let filter = tasks => tasks
 
-let onToggle = id => u.toggleTask(id)
+let onToggle = id => {
+    showSteps.set({ ...$showSteps, [id]: false })
+    u.toggleTask(id)
+}
 
 // On Toggle Steps
 // toggles the visiblity of a given tasks steps
