@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       colors: {
         primary: _t.colors.gray[300],
+        highlight: '#6c63ff'
       },
       opacity: {
         '80': '0.8',
