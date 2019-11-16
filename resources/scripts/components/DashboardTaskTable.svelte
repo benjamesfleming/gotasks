@@ -5,7 +5,7 @@ import { sortBy } from 'lodash'
 import { AuthObject as u } from '~/utils/auth'
 import CheckBox from '~/components/CheckBox'
 
-
+export let sort = (a, b) => 0
 export let filter = tasks => tasks
 
 let onToggle = id => {
@@ -41,11 +41,12 @@ let onToggleSteps = id => {
 
 {#if $u.tasks.filter(filter).length > 0}
     <div class="w-full overflow-hidden rounded shadow-md transition-all hover:shadow-lg">
+        {#each $u.tasks.filter(filter).sort(sort) as task (task.id)}
             <div class="opacity-75 hover:opacity-80 transition-all">
                 <div class="flex justify-between items-center bg-gray-400 cursor-pointer" on:click={() => onToggleSteps(task.id)}>
-                <div class="p-3 w-16">
-                    <CheckBox checked={task.isCompleted} on:change={() => onToggle(task.id)}/>
-                </div>
+                    <div class="p-3 w-16">
+                        <CheckBox checked={task.isCompleted} on:change={() => onToggle(task.id)}/>
+                    </div>
                     <div class="p-3 flex-1">
                         <span>{task.title}</span>
                         <div class="flex flex-wrap">
@@ -54,25 +55,25 @@ let onToggleSteps = id => {
                             {/each}
                         </div>
                     </div>
-                <div class="p-3 flex-1">
-                    {task.isCompleted ? moment(task.completedAt).fromNow() : 'Incomplete'}
-                </div>
-                <div class="p-3">
-                    <i class="fas fa-chevron-circle-{$showSteps[task.id] ? 'up' : 'down'} transition-all"></i>
-                </div>
-            </div>
-            <div class="step-list {$showSteps[task.id] ? 'max-h-full py-3' : 'max-h-0 py-0'} overflow-hidden transition-all bg-gray-300">
-                {#each sortBy(task.steps, ['order']) as step, idx}
-                    <div class="step flex py-1">
-                        <div class="flex justify-end w-16">
-                            <span class="text-center text-sm self-center">{idx +1} •</span>
-                        </div>
-                        <div class="px-3">
-                            {step.title} <br/>
-                        </div> 
+                    <div class="p-3 flex-1">
+                        {task.isCompleted ? moment(task.completedAt).fromNow() : 'Incomplete'}
                     </div>
-                {/each}
-            </div>
+                    <div class="p-3">
+                        <i class="fas fa-chevron-circle-{$showSteps[task.id] ? 'up' : 'down'} transition-all"></i>
+                    </div>
+                </div>
+                <div class="step-list {$showSteps[task.id] ? 'max-h-full py-3' : 'max-h-0 py-0'} overflow-hidden transition-all bg-gray-300">
+                    {#each sortBy(task.steps, ['order']) as step, idx}
+                        <div class="step flex py-1">
+                            <div class="flex justify-end w-16">
+                                <span class="text-center text-sm self-center">{idx +1} •</span>
+                            </div>
+                            <div class="px-3">
+                                {step.title} <br/>
+                            </div> 
+                        </div>
+                    {/each}
+                </div>
             </div>
         {/each}
     </div>

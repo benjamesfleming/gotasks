@@ -44,7 +44,7 @@ let taskModal = false
         </div>
 
         {#if $u.tasks}
-            <TaskTable filter={t => !t.isCompleted}>
+            <TaskTable filter={t => !t.isCompleted} sort={(a, b) => moment(a.createdAt).isBefore(b.createdAt) ? 1 : -1}>
                 <div class="max-w-lg mx-auto py-12 flex items-center justify-center">
                     <img class="max-w-xs pr-12 drop-shadow-md hover:drop-shadow-lg transition-all" src="/assets/images/undraw_completed.svg" alt="Kiwi standing on oval">
                     <p class="text-3xl text-center font-extrabold text-gray-800">
@@ -55,7 +55,7 @@ let taskModal = false
 
             <hr class="h-1 my-6 bg-gray-300 shadow-sm rounded"/>
 
-            <TaskTable filter={t => t.isCompleted}>
+            <TaskTable filter={t => t.isCompleted} sort={(a, b) => moment(a.completedAt).isBefore(b.completedAt) ? 1 : -1}>
                 <div class="max-w-lg mx-auto py-12 flex items-center justify-center">
                     <img class="max-w-xs pr-12 drop-shadow-md hover:drop-shadow-lg transition-all" src="/assets/images/undraw_void.svg" alt="Kiwi standing on oval">
                     <p class="text-3xl text-center font-extrabold text-gray-800">
