@@ -21,10 +21,10 @@ body {
 
 .form-button {
     @extend %button;
-    @apply mt-6 py-2 bg-blue-500 text-white float-right;
+    @apply mt-6 py-2 bg-highlight text-white float-right;
 
     &:hover {
-        @apply bg-blue-200 text-gray-800;
+        @apply bg-indigo-400 text-gray-800;
     }
 }
 
