@@ -1,6 +1,6 @@
 import { Task, User } from '~/models'
 import { createWritableStore, getStoreValue } from '~/store'
-import { get, post } from '~/utils/api'
+import { get, post, del } from '~/utils/api'
 
 /**
  * Create User Store
@@ -71,6 +71,18 @@ export function createUserStore (user, { tasks }, saveToLocalStorage = false) {
                 update(u => new User({ ...u, tasks: [...u.tasks, _t] }))
             }
             return [response != null, error]
+        },
+
+        // Delete Task, deletes the task with the given id
+        // e.g. createUserStore(user).deleteTask(id)
+        async deleteTask (id) {
+            const [response, error] = await del(`/tasks/${id}`)
+            if (response != null) {
+                update(u => {
+                    let tasks = u.tasks.filter(t => t.id != id)
+                    return new User({ ...u, tasks })
+                })
+            }
         },
     }
 
