@@ -99,9 +99,9 @@ let onTaskDelete = async id => {
                     <div class="p-3 flex-1">
                         {task.isCompleted ? moment(task.completedAt).fromNow() : 'Incomplete'}
                     </div>
-                    <div class="p-3">
+                    <div class="p-3 pr-6 text-lg">
                         <i class="fas fa-chevron-circle-{$showSteps[task.id] ? 'up' : 'down'} text-grey-800 hover:text-gray-700 transition-all"></i>
-                        <i class="fas fa-trash ml-3 text-red-600 hover:text-red-400 transition-all" on:click|stopPropagation={() => onTaskDelete(task.id)}></i>
+                        <i class="fas fa-trash ml-3 text-highlight hover:text-indigo-400 transition-all" on:click|stopPropagation={() => onTaskDelete(task.id)}></i>
                     </div>
                 </div>
                 <div class="step-list {$showSteps[task.id] ? 'max-h-full py-3' : 'max-h-0 py-0'} overflow-hidden transition-all bg-gray-300">
