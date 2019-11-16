@@ -15,12 +15,12 @@ export let checked = false;
   display: none;
 }
 .label__check {
-  border-radius: 50%;
+  border-radius: 35%;
   border: 5px solid rgba(0, 0, 0, 0.1);
   background: white;
   vertical-align: middle;
-  width: 2em;
-  height: 2em;
+  width: 2.2em;
+  height: 2.2em;
   cursor: pointer;
   display: flex;
   align-items: center;
