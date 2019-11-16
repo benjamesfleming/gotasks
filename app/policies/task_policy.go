@@ -47,3 +47,9 @@ func (p *TaskPolicy) CanCreate() bool {
 func (p *TaskPolicy) CanUpdate(t *models.Task) bool {
 	return p.User.IsAdmin || (p.User.ID == t.UserID)
 }
+
+// CanDelete validates if the current user is allowed to
+// delete the requested task
+func (p *TaskPolicy) CanDelete(t *models.Task) bool {
+	return p.User.IsAdmin || (p.User.ID == t.UserID)
+}

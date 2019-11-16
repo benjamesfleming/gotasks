@@ -33,6 +33,12 @@ func (t *Task) BeforeCreate(scope *gorm.Scope) error {
 	return scope.SetColumn("ID", uuid)
 }
 
+// AfterDelete will delete all the orphaned steps
+func (t *Task) AfterDelete(tx *gorm.DB) (err error) {
+	tx.Where(&Step{TaskID: t.ID}).Delete(&Step{})
+	return
+}
+
 // IsEmpty checks if the task struct has been successfully created
 func (t Task) IsEmpty() bool {
 	return t.ID == uuid.Nil

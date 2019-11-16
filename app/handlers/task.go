@@ -110,7 +110,7 @@ func TaskUpdateHandler(e echo.Context) error {
 }
 
 // TaskStepUpdateHandler handles the requests to update a tasks step
-// POST /tasks/:task_id/steps/:step_id
+// POST /api/tasks/:task_id/steps/:step_id
 func TaskStepUpdateHandler(e echo.Context) error {
 	taskID := e.Param("task_id")
 	stepID := e.Param("step_id")
@@ -148,4 +148,26 @@ func TaskStepUpdateHandler(e echo.Context) error {
 	}
 
 	return e.JSON(200, step)
+}
+
+// TaskDeleteHandler handles the requests to delete a task
+// DELETE /api/tasks/:id
+func TaskDeleteHandler(e echo.Context) error {
+	id := e.Param("id")
+	task := new(models.Task)
+
+	db := e.Get("Database").(*gorm.DB)
+	db.Where("id = ?", id).First(&task)
+
+	if !p.NewTaskPolicy(e).CanDelete(task) {
+		e.Logger().Errorf("[401 Unauthorized] User Failed Policy Check For Task [%s]", task.ID)
+		return e.JSON(401, errUnauthorized)
+	}
+
+	if err := db.Model(&task).Delete(task).Error; err != nil {
+		e.Logger().Error("[500 Internal Server Error] Failed To Delete The Task From The Database", err)
+		return e.JSON(500, err)
+	}
+
+	return e.JSON(200, task)
 }
