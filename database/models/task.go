@@ -12,15 +12,16 @@ import (
 
 // Task ...
 type Task struct {
-	ID        uuid.UUID `gorm:"type:uuid;primary_key;"`
-	UserID    uuid.UUID `gorm:"type:uuid;not null;"`
-	Title     string
-	Tags      string
-	Note      string
-	Completed nulls.Time
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Steps     []Step
+	ID          uuid.UUID `gorm:"type:uuid;primary_key;"`
+	UserID      uuid.UUID `gorm:"type:uuid;not null;"`
+	Title       string
+	Tags        string
+	Note        string
+	Order       uint
+	CompletedAt nulls.Time
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	Steps       []Step
 }
 
 // BeforeCreate will set a UUID rather than numeric ID.

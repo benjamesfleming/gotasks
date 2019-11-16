@@ -23,7 +23,7 @@ func AuthRegisterHandler(e echo.Context) error {
 	user.ProviderID = nulls.NewString(tkn.ID)
 	user.Avatar = tkn.Picture
 	user.Tasks = []models.Task{
-		models.Task{Title: "My First Task... Yay!", Note: "Complete this to get started on your productive adventure.", Tags: "first-task, easy"},
+		models.Task{Title: "My First Task... Yay!", Note: "Complete this to get started on your productive adventure.", Tags: "first-task, easy", Order: 0},
 	}
 
 	if err := user.Validate(); err != nil {

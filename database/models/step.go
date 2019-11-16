@@ -11,13 +11,14 @@ import (
 
 // Step ...
 type Step struct {
-	ID        uuid.UUID `gorm:"type:uuid;primary_key;"`
-	TaskID    uuid.UUID `gorm:"type:uuid;not null;"`
-	Title     string
-	Completed nulls.Time
-	Parent    *Task
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID          uuid.UUID `gorm:"type:uuid;primary_key;"`
+	TaskID      uuid.UUID `gorm:"type:uuid;not null;"`
+	Title       string
+	Order       uint
+	CompletedAt nulls.Time
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	Parent      *Task
 }
 
 // BeforeCreate will set a UUID rather than numeric ID.

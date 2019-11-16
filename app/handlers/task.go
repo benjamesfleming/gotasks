@@ -96,7 +96,7 @@ func TaskUpdateHandler(e echo.Context) error {
 	task.Title = taskData.Title
 	task.Tags = taskData.Tags
 	task.Note = taskData.Note
-	task.Completed = taskData.Completed
+	task.CompletedAt = taskData.CompletedAt
 
 	if err := task.Validate(); err != nil {
 		e.Logger().Error("[400 Bad Request] Failed to validate the task", err)
