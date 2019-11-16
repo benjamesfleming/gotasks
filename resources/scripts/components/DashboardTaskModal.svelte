@@ -121,7 +121,7 @@ let onClearError = key => {
             {#if tags.length > 0}
                 <div class="pb-3 flex flex-wrap">
                     {#each tags as tag, idx}
-                        <div class="px-3 py-1 mt-2 mr-2 text-center text-sm bg-gray-300 rounded-lg shadow-md hover:shadow-lg hover:bg-red-400 transition-all cursor-pointer" on:click={() => onTagRemove(idx)}>{tag}</div>
+                        <div class="px-3 py-1 mt-2 mr-2 text-center text-sm bg-gray-300 rounded shadow-md hover:shadow-lg hover:bg-red-400 transition-all cursor-pointer" on:click={() => onTagRemove(idx)}>{tag}</div>
                     {/each}
                 </div>
             {/if}
