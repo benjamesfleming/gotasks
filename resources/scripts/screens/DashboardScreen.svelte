@@ -13,7 +13,7 @@ let taskModal = false
 <TaskModal on:close={() => taskModal = false}/>
 {/if}
 
-<div class="container mx-auto mt-6">
+<div class="container mx-auto my-6">
 
     <div class="max-w-xs px-6">
         <img class="rounded-lg shadow-md mb-6 transition-all hover:shadow-lg" src="{$u.avatar}" alt="{$u.fullName}'s Profile Picture"/>
