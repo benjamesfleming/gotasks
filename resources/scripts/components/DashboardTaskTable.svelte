@@ -2,6 +2,7 @@
 import { writable } from 'svelte/store'
 import * as moment from 'moment'
 import { sortBy } from 'lodash'
+import Swal from 'sweetalert2'
 import { AuthObject as u } from '~/utils/auth'
 import CheckBox from '~/components/CheckBox'
 
@@ -24,6 +25,28 @@ let onToggleSteps = id => {
 // toggles the completion of a given step
 let onStepToggle = (task, id) => {
     u.toggleStep(task.id, id)
+}
+
+// On Task Delete
+// deletes the task after confermation
+let onTaskDelete = async id => {
+    let { value } = await Swal.fire({
+        title: 'Are you sure?',
+        width: '400px',
+        html: `
+            <p>Once a task has been deleted<br/> it can\'t be bought back.</p>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonColor: '#4299e1',
+        confirmButtonColor: '#e53e3e',
+        reverseButtons: true,
+        confirmButtonText: 'Delete'
+    })
+
+    if (value == true) {
+        u.deleteTask(id)
+    }
 }
 </script>
 
@@ -77,7 +100,8 @@ let onStepToggle = (task, id) => {
                         {task.isCompleted ? moment(task.completedAt).fromNow() : 'Incomplete'}
                     </div>
                     <div class="p-3">
-                        <i class="fas fa-chevron-circle-{$showSteps[task.id] ? 'up' : 'down'} transition-all"></i>
+                        <i class="fas fa-chevron-circle-{$showSteps[task.id] ? 'up' : 'down'} text-grey-800 hover:text-gray-700 transition-all"></i>
+                        <i class="fas fa-trash ml-3 text-red-600 hover:text-red-400 transition-all" on:click|stopPropagation={() => onTaskDelete(task.id)}></i>
                     </div>
                 </div>
                 <div class="step-list {$showSteps[task.id] ? 'max-h-full py-3' : 'max-h-0 py-0'} overflow-hidden transition-all bg-gray-300">
