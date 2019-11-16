@@ -1,3 +1,5 @@
+import * as moment from 'moment'
+
 export class Step {
     constructor({ id, userId, taskId, title, order, completedAt, createdAt, updatedAt }) {
         this.id             = id
@@ -22,5 +24,11 @@ export class Step {
             createdAt       : s["CreatedAt"],
             updatedAt       : s["UpdatedAt"]
         })
+    }
+
+    // Get the completion status based on the data
+    set isCompleted (value) { this.completedAt = value ? moment().toISOString() : "0001-01-01T00:00:00Z" }
+    get isCompleted () {
+        return this.completedAt != null && !moment(this.completedAt).isBefore('1970-01-01', 'year')
     }
 }
