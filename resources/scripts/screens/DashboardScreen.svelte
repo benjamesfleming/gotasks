@@ -44,7 +44,7 @@ let searchOptions = {
             </div>
 
             <a class="button my-3" href="#/app" on:click={() => taskModal = true}>
-                <i class="fas fa-plus"></i> Add
+                <i class="fas fa-plus text-gray-800"></i> Add
             </a>
         </div>
 
