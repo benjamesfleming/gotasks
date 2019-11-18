@@ -9,6 +9,7 @@
 @import "tailwindcss/utilities";
 
 @import "./components/button";
+@import "./components/sortable";
 @import "./components/toolbar";
 
 body {
