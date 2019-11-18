@@ -1,5 +1,8 @@
 <script>
+import { onMount } from 'svelte'
 import { writable } from 'svelte/store'
+import { Sortable, Plugins } from '@shopify/draggable'
+import * as mudder from 'mudder' 
 import * as moment from 'moment'
 import { sortBy } from 'lodash'
 import Swal from 'sweetalert2'
@@ -8,7 +11,67 @@ import CheckBox from '~/components/CheckBox'
 
 export let sort = (a, b) => 0
 export let filter = tasks => tasks
+export let sortable = false
 
+let listEl = null
+
+$: if (listEl != null) {
+    let sortable = new Sortable(listEl, {
+        draggable: '.sortable',
+        handle: '.sortable-handle',
+        mirror: {
+            append: '.sortable-list',
+            constrainDimensions: true,
+        },
+        swapAnimation: {
+            duration: 200,
+            easingFunction: 'ease-in-out'
+        },
+        plugins: [Plugins.SwapAnimation]
+    })
+
+    sortable.on('sortable:stop', onSortStop);
+}
+
+// On Sort Stop
+// handles when the user stop sorting a item (they drop it)
+// `https://shopify.github.io/draggable/`
+let onSortStop = e => {
+    let { oldIndex, newIndex } = e.data
+    let tasks = $u.tasks.filter(filter).sort(sort)
+        tasks.splice(newIndex, 0, tasks.splice(oldIndex, 1)[0])
+
+    let task = tasks[newIndex]
+    let prevTask = tasks[newIndex - 1]
+    let nextTask = tasks[newIndex + 1]
+
+    // if the item has been moved to the start of the list
+    // then set its position to `a` and set the position of the previous first item
+    // to in between `a` and whatever the previous second item was
+    // `https://fasiha.github.io/post/mudder/`
+
+    if (tasks.length > 1) {
+        if (prevTask == null && nextTask == null) {
+            task.position = 'a'
+        } else {
+            if (newIndex == 0) {
+                task.position = 'a'
+                nextTask.position = mudder.alphabet.mudder('a', (tasks[2] || {}).position || '')[0]
+            } else {
+                task.position = mudder.alphabet.mudder(prevTask.position, (nextTask || {}).position || '')[0]
+            }
+        }
+    }
+
+    // console.log('----')
+    // tasks.sort(sort).forEach(t => console.log(t.title, t.position))
+
+    u.updateTask(task)
+    nextTask && u.updateTask(nextTask)
+}
+
+// On Toggle
+// hides the tasks steps then toggles it completion
 let onToggle = id => {
     showSteps.set({ ...$showSteps, [id]: false })
     u.toggleTask(id)
@@ -81,10 +144,10 @@ let onTaskDelete = async id => {
 </style>
 
 {#if $u.tasks.filter(filter).length > 0}
-    <div class="w-full overflow-hidden rounded shadow-md transition-all hover:shadow-lg">
+    <div bind:this={listEl} class="sortable-list w-full overflow-hidden rounded shadow-md transition-all hover:shadow-lg">
         {#each $u.tasks.filter(filter).sort(sort) as task (task.id)}
-            <div class="opacity-75 hover:opacity-80 transition-all">
-                <div class="flex justify-between items-center bg-gray-400 cursor-pointer" on:click={() => onToggleSteps(task.id)}>
+            <div class="sortable opacity-75 hover:opacity-80" data-id={task.id}>
+                <div class="sortable-content flex justify-between items-center bg-gray-400 cursor-pointer" on:click={() => onToggleSteps(task.id)}>
                     <div class="p-3 w-16">
                         <CheckBox checked={task.isCompleted} on:change={() => onToggle(task.id)}/>
                     </div>
@@ -100,11 +163,12 @@ let onTaskDelete = async id => {
                         {task.isCompleted ? moment(task.completedAt).fromNow() : 'Incomplete'}
                     </div>
                     <div class="p-3 pr-6 text-lg">
-                        <i class="fas fa-chevron-circle-{$showSteps[task.id] ? 'up' : 'down'} text-grey-800 hover:text-gray-700 transition-all"></i>
+                        {#if sortable == true}<i class="fas fa-sort text-grey-800 hover:text-gray-700 p-3 transition-all sortable-handle"></i>{/if}
+                        <i class="fas fa-chevron-circle-{$showSteps[task.id] ? 'up' : 'down'} ml-3 text-grey-800 hover:text-gray-700 transition-all"></i>
                         <i class="fas fa-trash ml-3 text-highlight hover:text-indigo-400 transition-all" on:click|stopPropagation={() => onTaskDelete(task.id)}></i>
                     </div>
                 </div>
-                <div class="step-list {$showSteps[task.id] ? 'max-h-full py-3' : 'max-h-0 py-0'} overflow-hidden transition-all bg-gray-300">
+                <div class="sortable-content step-list {$showSteps[task.id] ? 'max-h-full py-3' : 'max-h-0 py-0'} overflow-hidden transition-all bg-gray-300">
                     {#each sortBy(task.steps, ['order']) as step, idx (step.id)}
                         <div class="step flex py-1">
                             <div class="flex justify-end w-16">

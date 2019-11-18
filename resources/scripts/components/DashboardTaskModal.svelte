@@ -55,7 +55,11 @@ let onTagRemove = idx => {
 // On Continue Click
 // validate the given data then submit to the api
 let onContinueClick = async () => {
-    let [ok, err] = await u.createTask({ title, note, tags: tags.join(", "), steps: steps.map((s, i) => ({ title: s, order: i })) })
+    let [ok, err] = await u.createTask({ 
+        title, note, 
+        tags: tags.join(", "), 
+        steps: steps.map((s, i) => ({ title: s, order: i })) 
+    })
     if (err != null && Object.keys(err.all || {}).length > 0) {
         errors = err.all
     } else {

@@ -38,7 +38,7 @@ let taskModal = false
         </div>
 
         {#if $u.tasks.length > 0}
-            <TaskTable filter={t => !t.isCompleted} sort={(a, b) => moment(a.createdAt).isBefore(b.createdAt) ? 1 : -1}>
+            <TaskTable filter={t => !t.isCompleted} sort={(a, b) => a.position > b.position ? 1 : -1} sortable>
                 <div class="max-w-lg mx-auto py-12 flex items-center justify-center">
                     <img class="max-w-xs pr-12 drop-shadow-md hover:drop-shadow-lg transition-all" src="/assets/images/undraw_completed.svg" alt="Kiwi standing on oval">
                     <p class="text-3xl text-center font-extrabold text-gray-800">
