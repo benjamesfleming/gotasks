@@ -36,7 +36,10 @@
 .toolbar > .button {
     @apply shadow-md;
     @apply my-0;
-    background: theme('colors.primary');
+
+    &:not(:active) {
+        background: theme('colors.primary');
+    }
 }
 
 .toolbar > button {

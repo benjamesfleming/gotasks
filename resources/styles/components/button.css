@@ -3,6 +3,10 @@
     @apply items-center justify-center;
     @apply transition-all;
 
+    &:active {
+        @apply bg-animate;
+    }
+
     & > i {
         @apply mr-2;
     }

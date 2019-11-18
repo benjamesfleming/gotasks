@@ -165,7 +165,7 @@ let onTaskDelete = async id => {
                     <div class="p-3 pr-6 text-lg">
                         {#if sortable == true}<i class="fas fa-sort text-grey-800 hover:text-gray-700 p-3 transition-all sortable-handle"></i>{/if}
                         <i class="fas fa-chevron-circle-{$showSteps[task.id] ? 'up' : 'down'} ml-3 text-grey-800 hover:text-gray-700 transition-all"></i>
-                        <i class="fas fa-trash ml-3 text-highlight hover:text-indigo-400 transition-all" on:click|stopPropagation={() => onTaskDelete(task.id)}></i>
+                        <i class="fas fa-trash ml-3 text-clip bg-gray-800 hover:bg-gray-700 active:bg-animate transition-all" on:click|stopPropagation={() => onTaskDelete(task.id)}></i>
                     </div>
                 </div>
                 <div class="sortable-content step-list {$showSteps[task.id] ? 'max-h-full py-3' : 'max-h-0 py-0'} overflow-hidden transition-all bg-gray-300">

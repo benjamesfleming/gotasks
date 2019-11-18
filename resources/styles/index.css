@@ -8,6 +8,7 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@import "./components/bg-animate";
 @import "./components/button";
 @import "./components/sortable";
 @import "./components/toolbar";
@@ -27,6 +28,11 @@ body {
     &:hover {
         @apply bg-indigo-400 text-gray-800;
     }
+}
+
+.text-clip {
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 @responsive {
