@@ -38,7 +38,6 @@ import { IsAuthenticated, IsRegistered } from '~/utils/auth'
 .title {
     font-size: 12vw;
     text-shadow: 5px 5px 0 theme('colors.highlight');
-    mask-image: linear-gradient(to left, transparent, rgba(0, 0, 0, 1.0) 20%, rgba(0, 0, 0, 1.0) 80%, transparent);
     padding-bottom: 1.5rem;
 }
 
