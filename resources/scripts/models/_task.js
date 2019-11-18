@@ -2,14 +2,14 @@ import * as moment from 'moment'
 import { Step } from '.' 
 
 export class Task {
-    constructor({ id, userId, title, tags, steps, note, order, completedAt, createdAt, updatedAt }) {
+    constructor({ id, userId, title, tags, steps, note, position, completedAt, createdAt, updatedAt }) {
         this.id             = id
         this.userId         = userId
         this.title          = title
         this.tags           = tags
         this.steps          = steps || []
         this.note           = note
-        this.order          = order
+        this.position       = position
         this.completedAt    = completedAt
         this.createdAt      = createdAt
         this.updatedAt      = updatedAt
@@ -24,7 +24,7 @@ export class Task {
             tags            : t["Tags"],
             steps           : Array.from(t["Steps"] || []).map(s => Step.fromApi(s)),
             note            : t["Note"],
-            order           : t["Order"],
+            position        : t["Position"],
             completedAt     : t["CompletedAt"],
             createdAt       : t["CreatedAt"],
             updatedAt       : t["UpdatedAt"]

@@ -9,9 +9,11 @@
   },
   "repository": "github.com/benjamesfleming/gotasks",
   "dependencies": {
+    "@shopify/draggable": "^1.0.0-beta.8",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
+    "mudder": "^1.0.9",
     "postcss-nested": "^4.2.1",
     "postcss-preset-env": "^6.7.0",
     "svelte-preprocess-postcss": "^1.1.1",
