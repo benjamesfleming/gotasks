@@ -1,9 +1,13 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CleanObsoleteChunks = require('webpack-clean-obsolete-chunks');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 const IgnoreEmitPlugin = require('ignore-emit-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const path = require('path');
  
 const APP_ENV = process.env.NODE_ENV || 'development';
@@ -23,6 +27,9 @@ module.exports = {
     },
     extensions: ['.scss', '.mjs', '.js', '.svelte'],
     mainFields: ['svelte', 'browser', 'module', 'main']
+  },
+  optimization: {
+    minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
   },
   module: {
     rules: [
@@ -118,7 +125,9 @@ module.exports = {
     ),
     // new IgnoreEmitPlugin(/\.s[ac]ss$/),
     new MiniCssExtractPlugin({ filename: 'bundle.css' }),
+    new MomentLocalesPlugin(),
     // new ManifestPlugin({ fileName: 'manifest.json' }),
     new LiveReloadPlugin({}),
+    new BundleAnalyzerPlugin()
   ]
 }
