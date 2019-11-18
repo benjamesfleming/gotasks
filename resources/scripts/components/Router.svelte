@@ -13,10 +13,7 @@ import DashboardScreen from '~/screens/DashboardScreen'
 </script>
 
 <Router path="#">
-    <Route exact>
-        <Navigation/>
-        <WelcomeScreen/>
-    </Route>
+    <Route exact component={WelcomeScreen} />
     <Route exact path="/error" component={ErrorScreen} />
 
     <Route exact path="/auth-complete" component={AuthCompleteScreen} />
