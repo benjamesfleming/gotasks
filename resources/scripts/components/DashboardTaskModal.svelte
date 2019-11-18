@@ -9,7 +9,7 @@ let show = {note: false, tags: true, steps: true}
 let isValid = false
 let errors = {}
 
-let tags = ["tag1", "tag-2", "a-long-tag"]
+let tags = []
 let steps = []
 let title = ""
 let note = ""
@@ -19,7 +19,7 @@ let note = ""
 // add the current step into the array, then reset
 // the input text box
 let onStepEnter = e => {
-    isValid = /^[a-zA-Z0-9\-_ ]+$/g.test(e.target.value) ? null : true
+    isValid = /^[\x00-\x7F]+$/g.test(e.target.value) ? null : true
     errors = { ...errors, steps: isValid } 
     if (e.key == "Enter" && errors.steps == null) {
         steps = [...steps, e.target.value]
@@ -38,7 +38,7 @@ let onStepRemove = idx => {
 // add the current tag into the array, then reset
 // the input text box
 let onTagEnter = e => {
-    isValid = /^[a-zA-Z0-9\-_ ]+$/g.test(e.target.value) ? null : true
+    isValid = /^[\x00-\x7F]+$/g.test(e.target.value) ? null : true
     errors = { ...errors, tags: isValid } 
     if (e.key == "Enter" && errors.tags == null) {
         tags = [...tags, e.target.value]
