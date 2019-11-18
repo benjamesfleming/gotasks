@@ -19,19 +19,8 @@ nav a:not(:last-child) {
     </h2>
 
     <div class="flex h-full px-2">
-    {#if !$IsAuthenticated}
-    <a class="button" href="/auth/github/login?from=/#/auth-complete">
-        <i class="fab fa-github"></i> Login
-    </a>
-    {:else}
-        {#if $IsRegistered}
         <a class="text-gray-900" href="/#/app">Dashboard</a>
-        {:else}
-        <a class="text-gray-900" href="/#/auth-complete">Complete Registation</a>
-        {/if}
-
         <a class="text-gray-900" href="/#/auth-logout">Logout</a>
-    {/if}
     </div>
     
 </nav>
