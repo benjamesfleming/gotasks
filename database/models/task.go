@@ -17,7 +17,7 @@ type Task struct {
 	Title       string
 	Tags        string
 	Note        string
-	Order       uint
+	Position    nulls.String
 	CompletedAt nulls.Time
 	CreatedAt   time.Time
 	UpdatedAt   time.Time

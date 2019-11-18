@@ -94,6 +94,7 @@ func TaskUpdateHandler(e echo.Context) error {
 	task.Title = taskData.Title
 	task.Tags = taskData.Tags
 	task.Note = taskData.Note
+	task.Position = taskData.Position
 	task.CompletedAt = taskData.CompletedAt
 
 	if err := task.Validate(); err != nil {
