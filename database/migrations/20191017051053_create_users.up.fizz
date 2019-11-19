@@ -1,9 +1,0 @@
-create_table("users") {
-	t.Column("id", "uuid", {"primary": true})
-	t.Column("email", "string", {})
-	t.Column("username", "string", {})
-	t.Column("password", "string", {"null": true})
-	t.Column("provider", "string", {"null": true})
-	t.Column("privileges", "text", {})
-	t.Timestamps()
-}
