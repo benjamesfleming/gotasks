@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"fmt"
@@ -25,7 +25,8 @@ import (
 	"github.com/ziflex/lecho/v2"
 )
 
-func main() {
+// StartServer...
+func StartServer() {
 	envy.Load()
 
 	// Echo instance
@@ -51,8 +52,8 @@ func main() {
 	db.AutoMigrate(&models.Step{})
 
 	// Load the rice boxes
-	assetsBox := rice.MustFindBox("public").HTTPBox()
-	templatesBox := rice.MustFindBox("resources/views")
+	assetsBox := rice.MustFindBox("../public").HTTPBox()
+	templatesBox := rice.MustFindBox("../resources/views")
 
 	// Create auth service with providers
 	service := auth.NewService(

@@ -44,7 +44,7 @@ jobs:
       run: |
         export PATH=${PATH}:`go env GOPATH`/bin
         export CGO_ENABLED=1
-        rice embed-go
+        rice embed-go -i ./app
         go build -o build/gotasks-linux-x64 server.go
         
     - name: Upload
