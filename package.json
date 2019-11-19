@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack --watch",
-    "build": "webpack -p --progress"
+    "dev": "NODE_ENV=development webpack --watch",
+    "build": "NODE_ENV=production webpack -p --progress"
   },
   "repository": "github.com/benjamesfleming/gotasks",
   "dependencies": {

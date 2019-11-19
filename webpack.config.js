@@ -14,7 +14,7 @@ const APP_ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
   mode: APP_ENV,
-  // devtool: APP_ENV == 'producation' ? false: 'source-map',
+  // devtool: APP_ENV == 'production' ? false: 'source-map',
   entry: [
     './resources/scripts/index.js',
     './resources/styles/index.css',
@@ -127,7 +127,7 @@ module.exports = {
     new MiniCssExtractPlugin({ filename: 'bundle.css' }),
     new MomentLocalesPlugin(),
     // new ManifestPlugin({ fileName: 'manifest.json' }),
-    new LiveReloadPlugin({}),
-    new BundleAnalyzerPlugin()
-  ]
+    APP_ENV != 'production' && new LiveReloadPlugin({}),
+    APP_ENV != 'production' && new BundleAnalyzerPlugin()
+  ].filter(p => p !== false)
 }
