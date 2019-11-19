@@ -92,6 +92,9 @@ var StartCommand = &cli.Command{
 			s.DB.Close()
 		}()
 
+		fmt.Println("----")
+		s.Logger.Infof("Starting Services")
+
 		return s.Start()
 	},
 }

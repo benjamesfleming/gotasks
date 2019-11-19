@@ -215,6 +215,8 @@ func (s *Server) Start() error {
 	s.DB.AutoMigrate(&models.Step{})
 
 	// Start The Web Server
+	s.Logger.Infof("Binding To [:%s]", s.Config.HTTPPort)
+	s.Logger.Infof("Ready")
 	err = s.Router.Start(":" + s.Config.HTTPPort)
 	if err != nil {
 		s.Logger.Fatal(err)
