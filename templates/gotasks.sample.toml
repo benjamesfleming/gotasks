@@ -12,15 +12,15 @@ env = "production"
 port = "3000"
 bind = "0.0.0.0"
 host = "http://127.0.0.1:3000"
-avatar-dir = "/tmp/gotasks/avatars"
+avatar-dir = "/avatars"
 unique-key = "{{ . }}"
 
 # Database Config
 #   `type` the type of database ("sqlite3", "mysql") (default: "sqlite3")
-#   `connection` the connection string of the database (default: "/tmp/gotasks/database.db")
+#   `connection` the connection string of the database (default: "./database.db")
 [database]
 type = "sqlite3"
-connection = "/tmp/gotasks/database.db"
+connection = "./database.db"
 
 # Auth Config
 #   `enabled` if the given provider is enabled (default: false)
