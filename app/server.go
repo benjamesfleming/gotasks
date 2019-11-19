@@ -136,11 +136,27 @@ func NewServer(opts *ServerOptions) *Server {
 		},
 	)
 
+	if !s.Config.GithubEnabled && !s.Config.GoogleEnabled {
+		s.Logger.Error("Authentication Config Invalid, Ensure Config Contains At Least ONE Enabled Provider")
+		s.Logger.Fatal("Aborting")
+		panic("no auth providers")
+	}
+
 	if s.Config.GithubEnabled {
+		if s.Config.GithubClientID == "" || s.Config.GithubSecret == "" {
+			s.Logger.Error("Github Provider Config Invalid, Ensure Config Contains [auth.github.client-id] AND [auth.github.secret]")
+			s.Logger.Fatal("Aborting")
+			panic("failed to enable github provider")
+		}
 		s.AuthService.AddProvider("github", s.Config.GithubClientID, s.Config.GithubSecret)
 	}
 
 	if s.Config.GoogleEnabled {
+		if s.Config.GoogleClientID == "" || s.Config.GoogleSecret == "" {
+			s.Logger.Error("Google Provider Config Invalid, Ensure Config Contains [auth.google.client-id] AND [auth.google.secret]")
+			s.Logger.Fatal("Aborting")
+			panic("failed to enable google provider")
+		}
 		s.AuthService.AddProvider("google", s.Config.GoogleClientID, s.Config.GoogleSecret)
 	}
 
@@ -203,7 +219,8 @@ func (s *Server) Start() error {
 	// if the database fails to load then panic
 	db, err := gorm.Open(s.Config.DatabaseType, s.Config.DatabaseConnection)
 	if err != nil {
-		s.Logger.Errorf("failed to connect to database")
+		s.Logger.Error("Failed To Connect To Database")
+		s.Logger.Fatal("Aborting")
 		panic(err)
 	}
 	defer db.Close()

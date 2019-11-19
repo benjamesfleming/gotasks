@@ -79,6 +79,8 @@ var StartCommand = &cli.Command{
 			GoogleSecret:   ctx.String("auth.google.secret"),
 		}
 
+		fmt.Println("----")
+
 		s := app.NewServer(opts)
 		c := make(chan os.Signal, 1)
 
@@ -93,9 +95,7 @@ var StartCommand = &cli.Command{
 			s.DB.Close()
 		}()
 
-		fmt.Println("----")
 		s.Logger.Infof("Starting Services")
-
 		return s.Start()
 	},
 }
