@@ -29,11 +29,11 @@ connection = "./database.db"
 [auth]
 
     [auth.github]
-    enabled = true
-    client-id = "xxx-xxx-xxx"
-    secret = "xxx-xxx-xxx-xxx-xxx-xxx"
+    enabled = false
+    client-id = ""
+    secret = ""
 
     [auth.google]
     enabled = false
-    client-id = "xxx-xxx-xxx"
-    secret = "xxx-xxx-xxx-xxx-xxx-xxx"
+    client-id = ""
+    secret = ""
