@@ -1,0 +1,39 @@
+# Global Config
+#   `env` the run mode ("development", "production") (default: "development")
+env = "production"
+
+# Server Config
+#   `port` the http listen port (default: "3000")
+#   `bind` the interface to bind to (default: "0.0.0.0")
+#   `host` the publicly routable host name (default: "http://127.0.0.1:3000")
+#   `avatar-dir` the directory to save the user avatars to
+#   `unique-key` must be 64 bytes
+[server]
+port = "3000"
+bind = "0.0.0.0"
+host = "http://127.0.0.1:3000"
+avatar-dir = "/tmp/gotasks/avatars"
+unique-key = "{{ . }}"
+
+# Database Config
+#   `type` the type of database ("sqlite3", "mysql") (default: "sqlite3")
+#   `connection` the connection string of the database (default: "/tmp/gotasks/database.db")
+[database]
+type = "sqlite3"
+connection = "/tmp/gotasks/database.db"
+
+# Auth Config
+#   `enabled` if the given provider is enabled (default: false)
+#   `client-id` the id provided by the provider
+#   `secret` the secret provided by the provider
+[auth]
+
+    [auth.github]
+    enabled = true
+    client-id = "xxx-xxx-xxx"
+    secret = "xxx-xxx-xxx-xxx-xxx-xxx"
+
+    [auth.google]
+    enabled = false
+    client-id = "xxx-xxx-xxx"
+    secret = "xxx-xxx-xxx-xxx-xxx-xxx"
