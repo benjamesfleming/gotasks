@@ -11,13 +11,15 @@ import (
 
 func main() {
 	cliApp := &cli.App{
+		HelpName:    "gotasks",
 		Name:        "gotasks",
 		Usage:       "get stuff done",
 		Description: "A Task Tracker & Todo List",
 		HideVersion: true,
 		Flags:       []cli.Flag{},
 		Commands: []*cli.Command{
-			InstallCommand, StartCommand,
+			InstallCommand,
+			StartCommand,
 		},
 	}
 
