@@ -21,6 +21,8 @@ require (
 	github.com/onsi/gomega v1.7.0 // indirect
 	github.com/rogpeppe/go-internal v1.4.0 // indirect
 	github.com/rs/zerolog v1.16.0
+	github.com/urfave/cli v1.22.1 // indirect
+	github.com/urfave/cli/v2 v2.0.0-alpha.2
 	github.com/valyala/fasttemplate v1.1.0 // indirect
 	github.com/ziflex/lecho/v2 v2.0.0
 	golang.org/x/crypto v0.0.0-20191112222119-e1110fd1c708 // indirect

@@ -8,16 +8,14 @@ import (
 
 	h "git.benfleming.nz/benfleming/gotasks/app/handlers"
 	"git.benfleming.nz/benfleming/gotasks/app/models"
-	r "git.benfleming.nz/benfleming/gotasks/routes"
 	rice "github.com/GeertJohan/go.rice"
-	"github.com/go-pkgz/auth"
+	authservice "github.com/go-pkgz/auth"
 	"github.com/go-pkgz/auth/avatar"
 	"github.com/go-pkgz/auth/token"
-	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/nulls"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/jinzhu/gorm/dialects/mysql"  // include mysql support
+	_ "github.com/jinzhu/gorm/dialects/sqlite" // include sqlite3 support
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/rs/zerolog"
@@ -25,54 +23,110 @@ import (
 	"github.com/ziflex/lecho/v2"
 )
 
-// StartServer...
-func StartServer() {
-	envy.Load()
+// ServerOptions ...
+type ServerOptions struct {
 
-	// Echo instance
-	e := echo.New()
+	// Server Config
+	HTTPPort        string
+	BindAddr        string
+	Host            string
+	AvatarDir       string
+	UniqueKey       string
+	CookiesHashKey  string
+	CookiesBlockKey string
 
-	// Init Logger
+	// Database Config
+	DatabaseType       string
+	DatabaseConnection string
+
+	// Github OAuth2 Config
+	GithubEnabled  bool
+	GithubClientID string
+	GithubSecret   string
+
+	// Google OAuth2 Config
+	GoogleEnabled  bool
+	GoogleClientID string
+	GoogleSecret   string
+}
+
+// Server ...
+type Server struct {
+	Config         *ServerOptions
+	Router         *echo.Echo
+	DB             *gorm.DB
+	AssetsBox      *rice.Box
+	TemplateBox    *rice.Box
+	Logger         *lecho.Logger
+	AuthService    *authservice.Service
+	AuthMiddleware struct {
+		Trace   echo.MiddlewareFunc
+		IsAuth  echo.MiddlewareFunc
+		IsAdmin echo.MiddlewareFunc
+	}
+}
+
+// NewServer ...
+func NewServer(opts *ServerOptions) *Server {
+	s := &Server{Config: opts, Router: echo.New()}
+
+	// Build The Logger
+	// this is a zerolog wrapper for echo
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
-	e.Logger = lecho.New(
+	s.Logger = lecho.New(
 		zerolog.ConsoleWriter{Out: os.Stdout},
 		lecho.WithTimestamp(),
 	)
+	s.Router.Logger = s.Logger
 
-	// Load the database
-	db, err := gorm.Open(envy.Get("DB_TYPE", ""), envy.Get("DB_CONNECTION", ""))
-	if err != nil {
-		e.Logger.Errorf("failed to connect to database")
-		panic(err)
-	}
-	defer db.Close()
+	// Get The Rice Boxes
+	// load the rices boxes either from memory or embeded file system
+	s.AssetsBox = rice.MustFindBox("../public")
+	s.TemplateBox = rice.MustFindBox("../resources/views")
 
-	db.AutoMigrate(&models.User{})
-	db.AutoMigrate(&models.Task{})
-	db.AutoMigrate(&models.Step{})
+	// Load The Authentication Service
+	// also load the enabled auth providers
+	s.AuthService = authservice.NewService(
+		authservice.Opts{
 
-	// Load the rice boxes
-	assetsBox := rice.MustFindBox("../public").HTTPBox()
-	templatesBox := rice.MustFindBox("../resources/views")
+			// Return the secret defined in the config
+			// should be a `64` bytes string
+			SecretReader: token.SecretFunc(
+				func() (string, error) { return s.Config.UniqueKey, nil },
+			),
 
-	// Create auth service with providers
-	service := auth.NewService(
-		auth.Opts{
-			SecretReader: token.SecretFunc(func() (string, error) { // secret key for JWT
-				return envy.Get("SESSION_SECRET", "xxx"), nil
-			}),
-			TokenDuration:  time.Minute * 5, // token expires in 5 minutes
-			CookieDuration: time.Hour * 24,  // cookie expires in 1 day and will enforce re-login
-			Issuer:         "gotasks",
-			URL:            envy.Get("HOST", "http://127.0.0.1:3000"),
-			AvatarStore:    avatar.NewLocalFS("./tmp/avatars"),
+			// // Enable / Disable secure cookies
+			// SecureCookies: true,
+
+			// Set token & cookie timeouts
+			// 	resonable defaults are 5 mins for the token
+			// 	and 1 day for the cookie
+			TokenDuration:  time.Minute * 5,
+			CookieDuration: time.Hour * 24, // cookie expires in 1 day and will enforce re-login
+
+			// JWT Issuer Name
+			// identifies this program in the JWTs it creates
+			Issuer: "gotasks",
+
+			// Authentication URL
+			// 	the URL which this server can be reached, and
+			//	must be set for thrid party auth to work
+			URL: s.Config.Host,
+
+			// Avatar Store
+			// local filesystem location that users avatars can be saved
+			AvatarStore: avatar.NewLocalFS(s.Config.AvatarDir),
+
+			// Claims Updater
+			//	updates the claims sent when the `/auth/user` path is requested, this should
+			//	add the registered status to the claims
 			ClaimsUpd: token.ClaimsUpdFunc(func(claims token.Claims) token.Claims {
 				if claims.User != nil {
 					claims.User.SetAdmin(false)
 					claims.User.SetBoolAttr("registered", false)
 
 					user := new(models.User)
-					if db.Where(&models.User{ProviderID: nulls.NewString(claims.User.ID)}).First(&user); !user.IsEmpty() {
+					if s.DB.Where(&models.User{ProviderID: nulls.NewString(claims.User.ID)}).First(&user); !user.IsEmpty() {
 						claims.User.SetAdmin(user.IsAdmin)
 						claims.User.SetBoolAttr("registered", true)
 					}
@@ -82,20 +136,27 @@ func StartServer() {
 		},
 	)
 
-	service.AddProvider("github", envy.Get("GITHUB_ID", ""), envy.Get("GITHUB_SECRET", ""))
+	if s.Config.GithubEnabled {
+		s.AuthService.AddProvider("github", s.Config.GithubClientID, s.Config.GithubSecret)
+	}
 
-	// Retrieve auth middleware
-	m := service.Middleware()
+	if s.Config.GoogleEnabled {
+		s.AuthService.AddProvider("google", s.Config.GoogleClientID, s.Config.GoogleSecret)
+	}
 
-	isAuth := echo.WrapMiddleware(m.Auth)
-	// isAdmin := echo.WrapMiddleware(m.AdminOnly)
-	// isTraced := echo.WrapMiddleware(m.Trace)
+	// Generate Auth Middleware
+	// wrap all auth middleware for use by echo
+	m := s.AuthService.Middleware()
 
-	// Middleware
-	// e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	e.Use(echo.WrapMiddleware(m.Trace))
-	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+	s.AuthMiddleware.Trace = echo.WrapMiddleware(m.Trace)
+	s.AuthMiddleware.IsAuth = echo.WrapMiddleware(m.Auth)
+	s.AuthMiddleware.IsAdmin = echo.WrapMiddleware(m.AdminOnly)
+
+	// Apply Middleware
+	// middleware runs in the order it is decleared
+	s.Router.Use(middleware.Recover())
+	s.Router.Use(s.AuthMiddleware.Trace)
+	s.Router.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			user := new(models.User)
 			tkn, err := token.GetUserInfo(c.Request())
@@ -105,27 +166,59 @@ func StartServer() {
 			c.Logger().Infof("Auth User    = %s", tkn.Name)
 
 			if err == nil {
-				db.Where(&models.User{ProviderID: nulls.NewString(tkn.ID)}).First(&user)
+				s.DB.Where(&models.User{ProviderID: nulls.NewString(tkn.ID)}).First(&user)
 			}
 
-			c.Set("Database", db)
+			c.Set("Database", s.DB)
 			c.Set("User", user)
-			c.Set("TemplatesBox", templatesBox)
+			c.Set("TemplatesBox", s.TemplateBox)
 
 			return next(c)
 		}
 	})
 
-	// Routes
-	e.GET("/", h.HomeHandler)
-	e.GET("/assets/*", echo.WrapHandler(http.FileServer(assetsBox)))
+	// Register Routes
+	// register all the http routes in the application
+	s.Router.GET("/", h.HomeHandler)
 
-	r.RegisterAPIRoutes(e, isAuth)
-	r.RegisterAuthRoutes(e, service)
+	assetsBox := http.FileServer(s.AssetsBox.HTTPBox())
+	s.Router.GET("/assets/*", echo.WrapHandler(assetsBox))
 
-	// Add error handling
+	registerAPIRoutes(s)
+	registerAuthRoutes(s)
+
+	// Redirect Any Bad Traffic
+	// return unknown traffic home
 	echo.NotFoundHandler = h.HomeHandler
+	echo.MethodNotAllowedHandler = h.HomeHandler
 
-	// Start server
-	e.Logger.Fatal(e.Start(":" + envy.Get("PORT", "3000")))
+	return s
+}
+
+// Start loads the database then starts the http web server
+// on the configured port
+func (s *Server) Start() error {
+
+	// Load The Database
+	// if the database fails to load then panic
+	db, err := gorm.Open(s.Config.DatabaseType, s.Config.DatabaseConnection)
+	if err != nil {
+		s.Logger.Errorf("failed to connect to database")
+		panic(err)
+	}
+	defer db.Close()
+
+	s.DB = db
+
+	s.DB.AutoMigrate(&models.User{})
+	s.DB.AutoMigrate(&models.Task{})
+	s.DB.AutoMigrate(&models.Step{})
+
+	// Start The Web Server
+	err = s.Router.Start(":" + s.Config.HTTPPort)
+	if err != nil {
+		s.Logger.Fatal(err)
+	}
+	s.Logger.Info("Goodbye")
+	return err
 }

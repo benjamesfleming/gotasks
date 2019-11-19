@@ -1,4 +1,4 @@
-package routes
+package app
 
 import (
 	h "git.benfleming.nz/benfleming/gotasks/app/handlers"
@@ -7,9 +7,11 @@ import (
 
 // RegisterAPIRoutes registers all the api routes
 // GET,POST /api/*
-func RegisterAPIRoutes(e *echo.Echo, m ...echo.MiddlewareFunc) {
+func registerAPIRoutes(s *Server) {
 
-	api := e.Group("/api", m...)
+	api := s.Router.Group(
+		"/api", s.AuthMiddleware.IsAuth,
+	)
 
 	api.GET("/tasks", h.TaskListHandler)
 	api.GET("/tasks/:id", h.TaskShowHandler)
@@ -22,5 +24,19 @@ func RegisterAPIRoutes(e *echo.Echo, m ...echo.MiddlewareFunc) {
 	api.GET("/users/:id", h.UserShowHandler)
 	api.GET("/users/:id/tasks", h.UserShowTasksHandler)
 	api.POST("/users", h.UserCreateHandler)
+
+}
+
+// RegisterAuthRoutes registers all the routes for auth handling
+// GET,POST /auth/*
+func registerAuthRoutes(s *Server) {
+
+	authRoutes, avaRoutes := s.AuthService.Handlers()
+
+	s.Router.GET("/auth/me", h.AuthMeHandler)
+	s.Router.POST("/auth/register", h.AuthRegisterHandler)
+
+	s.Router.Any("/auth/*", echo.WrapHandler(authRoutes))
+	s.Router.Any("/avatar/*", echo.WrapHandler(avaRoutes))
 
 }
