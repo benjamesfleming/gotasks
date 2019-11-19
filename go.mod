@@ -12,6 +12,7 @@ require (
 	github.com/gobuffalo/nulls v0.1.0
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/google/go-cmp v0.3.1 // indirect
+	github.com/gookit/color v1.2.0
 	github.com/jinzhu/gorm v1.9.11
 	github.com/labstack/echo/v4 v4.1.11
 	github.com/lib/pq v1.2.0 // indirect

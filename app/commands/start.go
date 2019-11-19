@@ -50,10 +50,11 @@ var _startFlags = []cli.Flag{
 
 // StartCommand ...
 var StartCommand = &cli.Command{
-	Flags:  _startFlags,
-	Name:   "start",
-	Usage:  "start the server",
-	Before: altsrc.InitInputSourceWithContext(_startFlags, altsrc.NewTomlSourceFromFlagFunc("config")),
+	Flags:    _startFlags,
+	HelpName: "gotasks start",
+	Name:     "start",
+	Usage:    "start the server",
+	Before:   altsrc.InitInputSourceWithContext(_startFlags, altsrc.NewTomlSourceFromFlagFunc("config")),
 	Action: func(ctx *cli.Context) error {
 		opts := &app.ServerOptions{
 			// Server Config

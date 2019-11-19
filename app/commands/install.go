@@ -10,6 +10,7 @@ import (
 	"os"
 
 	rice "github.com/GeertJohan/go.rice"
+	"github.com/gookit/color"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
@@ -53,8 +54,9 @@ func extractFile(box *rice.Box, fn, dest string, data interface{}) {
 
 // InstallCommand ...
 var InstallCommand = &cli.Command{
-	Name:  "install",
-	Usage: "add supporting files",
+	HelpName: "gotasks install",
+	Name:     "install",
+	Usage:    "add supporting files",
 	Flags: []cli.Flag{
 		&cli.BoolFlag{
 			Name:  "with-sqlite3",
@@ -109,7 +111,7 @@ var InstallCommand = &cli.Command{
 
 		// Extract Files
 		// extract all the files to their correct install locations
-		extractFile(box, "gotasks.sample.toml", ctx.String("output"), key)
+		extractFile(box, "gotasks.sample.toml", dest, key)
 
 		// Create Database File
 		// create a blank sqlite3 database
@@ -126,6 +128,14 @@ var InstallCommand = &cli.Command{
 		}
 
 		log.Info().Msg("Done")
+		fmt.Println("----")
+		fmt.Printf(
+			"NEXT STEPS:\n   %v\n   %v\n   %v\n   %v\n",
+			color.Sprintf("1. <info>cd</> <warn>%v</>", dest),
+			color.Sprintf("2. <info>cp</> <warn>%v %v</>", "gotasks.sample.toml", "gotasks.toml"),
+			color.Sprintf("3. follow setup steps in <warn>%v</>", "gotasks.toml"),
+			color.Sprintf("4. <info>gotasks start --help</>"),
+		)
 		return nil
 	},
 }
