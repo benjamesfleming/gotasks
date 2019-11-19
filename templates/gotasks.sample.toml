@@ -13,7 +13,7 @@ port = "3000"
 bind = "0.0.0.0"
 host = "http://127.0.0.1:3000"
 avatar-dir = "/avatars"
-unique-key = "{{ . }}"
+unique-key = "{{ . }}" # generated on install
 
 # Database Config
 #   `type` the type of database ("sqlite3", "mysql") (default: "sqlite3")
