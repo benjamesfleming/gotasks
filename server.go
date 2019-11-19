@@ -7,7 +7,7 @@ import (
 	"time"
 
 	h "git.benfleming.nz/benfleming/gotasks/app/handlers"
-	"git.benfleming.nz/benfleming/gotasks/database/models"
+	"git.benfleming.nz/benfleming/gotasks/app/models"
 	r "git.benfleming.nz/benfleming/gotasks/routes"
 	rice "github.com/GeertJohan/go.rice"
 	"github.com/go-pkgz/auth"

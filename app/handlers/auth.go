@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"git.benfleming.nz/benfleming/gotasks/database/models"
+	"git.benfleming.nz/benfleming/gotasks/app/models"
 	"github.com/go-pkgz/auth/token"
 	"github.com/gobuffalo/nulls"
 	"github.com/jinzhu/gorm"

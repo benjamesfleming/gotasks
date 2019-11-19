@@ -2,7 +2,7 @@ package handlers
 
 import (
 	p "git.benfleming.nz/benfleming/gotasks/app/policies"
-	"git.benfleming.nz/benfleming/gotasks/database/models"
+	"git.benfleming.nz/benfleming/gotasks/app/models"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo/v4"
 )
