@@ -9,6 +9,7 @@ import AuthCompleteScreen from '~/screens/AuthCompleteScreen'
 import AuthLogoutScreen from '~/screens/AuthLogoutScreen'
 import NotFoundScreen from '~/screens/NotFoundScreen'
 import ErrorScreen from '~/screens/ErrorScreen'
+import HelpScreen from '~/screens/HelpScreen'
 import WelcomeScreen from '~/screens/WelcomeScreen'
 import DashboardScreen from '~/screens/DashboardScreen'
 </script>
@@ -19,6 +20,11 @@ import DashboardScreen from '~/screens/DashboardScreen'
 
     <Route exact path="/auth-complete" component={AuthCompleteScreen} />
     <Route exact path="/auth-logout" component={AuthLogoutScreen} />
+
+    <Route exact path="/help">
+        <Navigation/>
+        <HelpScreen/>
+    </Route>
     
     <Route exact path="/app" condition={() => $IsRegistered} redirect="#/">
         <Navigation/>
