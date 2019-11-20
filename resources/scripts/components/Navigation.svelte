@@ -16,6 +16,7 @@ nav > a {
 
     <div class="flex h-full px-2">
         <a class="text-gray-900 mr-4" href="/#/app">Dashboard</a>
+        <a class="text-gray-900 mr-4" href="/#/account">Account</a>
         <a class="text-gray-900" href="/#/auth-logout">Logout</a>
     </div>
     
