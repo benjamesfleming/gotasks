@@ -56,7 +56,7 @@ export function createUserStore (user, { tasks }, saveToLocalStorage = false) {
                     sortedTasks[0].position = 'a'
                     sortedTasks[1].position = mudder.alphabet.mudder('a', (sortedTasks[2] || {}).position || '')[0]
 
-                    tasks = uniqBy([...tasks, ...sortedTasks], 'id')
+                    tasks = uniqBy([ ...sortedTasks, ...tasks], 'id')
                     task = tasks.find(t => t.id == id)
 
                     await post(`/tasks/${sortedTasks[0].id}`, sortedTasks[0])
@@ -126,14 +126,14 @@ export function createUserStore (user, { tasks }, saveToLocalStorage = false) {
             }
         },
 
-        // Order Task, reorders the tasks array to move the given indexs
-        // e.g. createUserStore(user).orderTask(id, 0, 1) // move task index 0 to index 1
+        // Update Task, updates the task in the database
+        // e.g. createUserStore(user).updateTask(task)
         async updateTask (task) {
-            let { tasks } = await getStoreValue({ subscribe })
-            let taskIdx = tasks.findIndex(t => t.id == task.id)
-            tasks[taskIdx] = task
-            await post(`/tasks/${task.id}`, task)
-            update(u => new User({ ...u, tasks }))
+            let [response, error] = await post(`/tasks/${task.id}`, task)
+            if (response != null) {
+                update(u => new User({ ...u, tasks: uniqBy([task, ...u.tasks], 'id') }))
+            }
+            return [response != null, error]
         },
     }
 
