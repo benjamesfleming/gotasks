@@ -3,8 +3,8 @@ package handlers
 import (
 	"errors"
 
-	p "git.benfleming.nz/benfleming/gotasks/app/policies"
 	"git.benfleming.nz/benfleming/gotasks/app/models"
+	p "git.benfleming.nz/benfleming/gotasks/app/policies"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo/v4"
 )
@@ -96,6 +96,7 @@ func TaskUpdateHandler(e echo.Context) error {
 	task.Note = taskData.Note
 	task.Position = taskData.Position
 	task.CompletedAt = taskData.CompletedAt
+	task.Steps = taskData.Steps
 
 	if err := task.Validate(); err != nil {
 		e.Logger().Error("[400 Bad Request] Failed to validate the task", err)
@@ -105,6 +106,13 @@ func TaskUpdateHandler(e echo.Context) error {
 	if err := db.Model(&task).Update(task).Error; err != nil {
 		e.Logger().Error("[500 Internal Server Error] Failed to update the validated task in the database", err)
 		return e.JSON(500, err)
+	}
+
+	for _, s := range task.Steps {
+		if err := db.Model(&models.Step{TaskID: task.ID}).Assign(s).FirstOrCreate(&models.Step{}).Error; err != nil {
+			e.Logger().Error("[500 Internal Server Error] Failed to update the tasks steps in the database", err)
+			return e.JSON(500, err)
+		}
 	}
 
 	return e.JSON(200, task)
