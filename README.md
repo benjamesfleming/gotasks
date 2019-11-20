@@ -5,6 +5,13 @@
 GoTasks is a simple self hosted task / todo list.
 
 
+## Roadmap
+
+- [ ] Add Google OAuth Support
+- [ ] Add Repeating Tasks
+- [ ] Optimize API Calls 
+
+
 ## Installation
 
 >**NOTE**: binaries are only provided for linux, follow the [Build From Source]() section to build for a different platform.
