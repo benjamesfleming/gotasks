@@ -4,10 +4,10 @@ import fuzzyFilter from 'fuzzy-array-filter'
 import TaskModal from '~/components/DashboardTaskModal'
 import TaskTable from '~/components/DashboardTaskTable'
 import { AuthObject as u } from '~/utils/auth'
+import { ShowTaskModal } from '~/store'
 
 u.loadTasks()
 
-let taskModal = false
 let searchQuery = ''
 let searchOptions = {
     keys: [
@@ -18,11 +18,13 @@ let searchOptions = {
     ],
     id: 'id'
 }
+
+let onTaskModalShow = () => {
+    ShowTaskModal.set(true)
+}
 </script>
 
-{#if taskModal}
-<TaskModal on:close={() => taskModal = false}/>
-{/if}
+<TaskModal />
 
 <div class="container mx-auto my-6">
 
@@ -43,7 +45,7 @@ let searchOptions = {
                 <i class="fas fa-search"></i>
             </div>
 
-            <a class="button my-3" href="#/app" on:click={() => taskModal = true}>
+            <a class="button my-3" href="#/app" on:click={() => onTaskModalShow()}>
                 <i class="fas fa-plus text-gray-800"></i> Add
             </a>
         </div>

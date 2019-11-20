@@ -7,6 +7,7 @@ import * as moment from 'moment'
 import { sortBy } from 'lodash'
 import Swal from 'sweetalert2'
 import { AuthObject as u } from '~/utils/auth'
+import { TaskObject as t, ShowTaskModal } from '~/store'
 import CheckBox from '~/components/CheckBox'
 
 export let sort = (a, b) => 0
@@ -111,6 +112,15 @@ let onTaskDelete = async id => {
         u.deleteTask(id)
     }
 }
+
+// On Task Edit
+// opens the task model for task editing
+let onTaskEdit = id => {
+    t.set(
+        $u.tasks.find(t => t.id == id)
+    )
+    ShowTaskModal.set(true)
+}
 </script>
 
 <style lang="postcss">
@@ -155,7 +165,7 @@ let onTaskDelete = async id => {
                         <span>{task.title}</span>
                         <div class="flex flex-wrap">
                             {#each task.tags.split(',') as tag, idx}
-                                <div class="px-3 py-0 mt-1 mr-2 text-center text-xs bg-gray-300 rounded-sm shadow-md hover:shadow-lg transition-all" on:click={() => onTagRemove(idx)}>{tag}</div>
+                                <div class="px-3 py-0 mt-1 mr-2 text-center text-xs bg-gray-300 rounded-sm shadow-md hover:shadow-lg transition-all">{tag}</div>
                             {/each}
                         </div>
                     </div>
@@ -165,6 +175,7 @@ let onTaskDelete = async id => {
                     <div class="p-3 pr-6 text-lg">
                         {#if sortable == true}<i class="fas fa-sort text-gray-900 hover:text-gray-800 p-3 transition-all sortable-handle"></i>{/if}
                         <i class="fas fa-chevron-circle-{$showSteps[task.id] ? 'up' : 'down'} ml-3 text-clip bg-gray-900 hover:bg-gray-800 active:bg-animate transition-all"></i>
+                        <i class="fas fa-pen-square ml-3 text-clip bg-gray-900 hover:bg-gray-800 active:bg-animate transition-all" on:click|stopPropagation={() => onTaskEdit(task.id)}></i>
                         <i class="fas fa-trash ml-3 text-clip bg-gray-900 hover:bg-gray-800 active:bg-animate transition-all" on:click|stopPropagation={() => onTaskDelete(task.id)}></i>
                     </div>
                 </div>

@@ -1,6 +1,10 @@
 import { writable } from 'svelte/store'
+import { Task } from '~/models'
 
 export * from './_user'
+
+export const TaskObject = writable(new Task({}))
+export const ShowTaskModal = writable(false)
 
 /**
  * Create Writable Store

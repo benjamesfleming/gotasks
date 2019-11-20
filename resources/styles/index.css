@@ -21,6 +21,15 @@ body {
     @apply flex;
 }
 
+.form-button-clear {
+    @extend %button;
+    @apply mt-6 py-2 text-gray-800 float-right;
+
+    &:hover {
+        @apply text-gray-700;
+    }
+}
+
 .form-button {
     @extend %button;
     @apply mt-6 py-2 bg-highlight text-white float-right;
