@@ -20,6 +20,7 @@ import DashboardScreen from '~/screens/DashboardScreen'
 
     <Route exact path="/auth-complete" component={AuthCompleteScreen} />
     <Route exact path="/auth-logout" component={AuthLogoutScreen} />
+    <Route exact path="/account" condition={() => $IsRegistered} redirect="#/" component={AccountScreen}/>
 
     <Route exact path="/help">
         <Navigation/>
@@ -31,10 +32,6 @@ import DashboardScreen from '~/screens/DashboardScreen'
         <DashboardScreen/>
     </Route>
 
-    <Route exact path="/account" condition={() => $IsRegistered} redirect="#/">
-        <Navigation/>
-        <AccountScreen/>
-    </Route>
     
     <Route fallback path="*" component={NotFoundScreen} />
 </Router>
