@@ -62,7 +62,7 @@ import { IsAuthenticated, IsRegistered } from '~/utils/auth'
     <h2 class="subtitle w-full text-center text-4xl pointer-events-none">GET STUFF DONE</h2>
 
     {#if !$IsAuthenticated}
-    <a class="signin-btn" href="/auth/github/login?from=/#/auth-complete">
+    <a class="signin-btn" href="/auth/github/login?from=/%23/auth-complete">
         <i class="fab fa-github mr-3" />
         <span class="mr-2">SIGN IN</span>
     </a>
