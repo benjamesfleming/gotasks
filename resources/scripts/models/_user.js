@@ -1,4 +1,5 @@
 import { kebabCase, replace, split } from 'lodash'
+import { Task } from '~/models'
 
 export class User {
 
@@ -45,7 +46,7 @@ export class User {
             lastName        : u["LastName"],
             username        : u["Username"],
             email           : u["Email"],
-            tasks           : u["Tasks"],
+            tasks           : Array.from(u["Tasks"] || []).map(t => Task.fromApi(t)),
             isAdmin         : u["IsAdmin"],
             isRegistered    : true,
             createdAt       : u["CreatedAt"],
