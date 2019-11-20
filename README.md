@@ -1,3 +1,5 @@
+![GoTasks Header Image](https://raw.githubusercontent.com/benjamesfleming/gotasks/master/docs/images/header.gif)
+
 # GoTasks
 
 GoTasks is a simple self hosted task / todo list.
