@@ -21,7 +21,7 @@ export class Task {
             id              : t["ID"],
             userId          : t["UserID"],
             title           : t["Title"],
-            tags            : t["Tags"],
+            tags            : t["Tags"] || "",
             steps           : Array.from(t["Steps"] || []).map(s => Step.fromApi(s)),
             note            : t["Note"],
             position        : t["Position"],
