@@ -1,4 +1,4 @@
-![GoTasks Header Image](https://raw.githubusercontent.com/benjamesfleming/gotasks/master/docs/images/header.gif)
+![GoTasks Header Image](https://github.com/benjamesfleming/gotasks/blob/master/docs/images/header.gif?raw=true)
 
 # GoTasks
 
