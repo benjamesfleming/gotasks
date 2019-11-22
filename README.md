@@ -22,7 +22,7 @@ The latest GoTasks binaries can be downloaded at [https://dl.benfleming.nz/gotas
 
 Run the following commands as **root** user, or use **sudo** where needed.
 
-1. `wget https://dl.benfleming.nz/gotasks/gotasks-linux-x64 -O /tmp/gotasks`
+1. `wget https://dl.benfleming.nz/gotasks/gotasks-latest -O /tmp/gotasks`
 2. `chmod +x /tmp/gotasks`
 3. `mv /tmp/gotasks /usr/local/bin`
 4. `gotasks install --help`
