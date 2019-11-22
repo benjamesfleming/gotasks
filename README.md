@@ -5,7 +5,7 @@
 GoTasks is a simple self hosted task / todo list.
 
 
-## Roadmap
+## Roadmap To V1
 
 - [ ] Responsive Mobile UI
 - [ ] Add Google OAuth Support
