@@ -11,6 +11,7 @@ GoTasks is a simple self hosted task / todo list.
 - [ ] Add Google OAuth Support
 - [ ] Add Repeating Tasks
 - [ ] Optimize API Calls 
+- [ ] Docker Containers
 
 
 ## Installation
