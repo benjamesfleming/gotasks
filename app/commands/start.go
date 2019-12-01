@@ -29,6 +29,9 @@ var _startFlags = []cli.Flag{
 	altsrc.NewStringFlag(&cli.StringFlag{Name: "database.type", Hidden: true}),
 	altsrc.NewStringFlag(&cli.StringFlag{Name: "database.connection", Hidden: true}),
 
+	// Auth Config
+	altsrc.NewStringFlag(&cli.StringFlag{Name: "auth.gravatar", Hidden: true}),
+
 	// Github Config
 	altsrc.NewBoolFlag(&cli.BoolFlag{Name: "auth.github.enabled", Hidden: true}),
 	altsrc.NewStringFlag(&cli.StringFlag{Name: "auth.github.client-id", Hidden: true}),
@@ -67,6 +70,9 @@ var StartCommand = &cli.Command{
 			// Database Config
 			DatabaseType:       or(ctx, "database.type", "sqlite3"),
 			DatabaseConnection: or(ctx, "database.connection", "/tmp/gotasks/database.db"),
+
+			// Auth Config
+			GravatarEnabled: or(ctx, "auth.gravatar", "none"),
 
 			// Github Config
 			GithubEnabled:  ctx.Bool("auth.github.enabled"),

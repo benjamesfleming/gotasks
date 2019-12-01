@@ -23,10 +23,17 @@ type = "sqlite3"
 connection = "./database.db"
 
 # Auth Config
+#   `gravatar` ("all", "fallback", "none") (default: "none")
+#       "all" to use Gravatar for all accounts
+#       "fallback" to use Gravatar only when no avatar is provided
+#       "none" disable Gravatar usage
+#
+# Auth Provider Config
 #   `enabled` if the given provider is enabled (default: false)
 #   `client-id` the id provided by the provider
 #   `secret` the secret provided by the provider
 [auth]
+gravatar = "none"
 
     [auth.github]
     enabled = false

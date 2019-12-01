@@ -29,7 +29,7 @@ let onTaskModalShow = () => {
 <div class="container mx-auto my-6">
 
     <div class="max-w-xs px-6">
-        <img class="rounded-lg shadow-md mb-6 transition-all hover:shadow-lg" src="{$u.avatar}" alt="{$u.fullName}'s Profile Picture"/>
+        <img class="rounded-lg shadow-md mb-6 transition-all hover:shadow-lg" src="{$u.avatar+"?s=512"}" alt="{$u.fullName}'s Profile Picture"/>
         <div class="user-info">
             <h1 class="text-4xl">{$u.fullName}</h1>
             <p>{$u.email}</p>

@@ -1,6 +1,8 @@
 package app
 
 import (
+	"crypto/md5"
+	"crypto/sha1"
 	"fmt"
 	"net/http"
 	"os"
@@ -11,6 +13,7 @@ import (
 	rice "github.com/GeertJohan/go.rice"
 	authservice "github.com/go-pkgz/auth"
 	"github.com/go-pkgz/auth/avatar"
+	"github.com/go-pkgz/auth/provider"
 	"github.com/go-pkgz/auth/token"
 	"github.com/gobuffalo/nulls"
 	"github.com/jinzhu/gorm"
@@ -21,6 +24,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/ziflex/lecho/v2"
+	"golang.org/x/oauth2"
 )
 
 // ServerOptions ...
@@ -38,6 +42,9 @@ type ServerOptions struct {
 	// Database Config
 	DatabaseType       string
 	DatabaseConnection string
+
+	// Auth Config
+	GravatarEnabled string
 
 	// Github OAuth2 Config
 	GithubEnabled  bool
@@ -130,6 +137,11 @@ func NewServer(opts *ServerOptions) *Server {
 						claims.User.SetAdmin(user.IsAdmin)
 						claims.User.SetBoolAttr("registered", true)
 					}
+
+					if s.Config.GravatarEnabled == "all" || (s.Config.GravatarEnabled == "fallback" && claims.User.Picture == "") {
+						hash := md5.Sum([]byte(claims.User.Email))
+						claims.User.Picture = fmt.Sprintf("https://www.gravatar.com/avatar/%x.png", hash)
+					}
 				}
 				return claims
 			}),
@@ -148,7 +160,34 @@ func NewServer(opts *ServerOptions) *Server {
 			s.Logger.Fatal("Aborting")
 			panic("failed to enable github provider")
 		}
-		s.AuthService.AddProvider("github", s.Config.GithubClientID, s.Config.GithubSecret)
+		s.AuthService.AddCustomProvider(
+			"github",
+
+			// Github Client Details
+			authservice.Client{
+				Cid:     s.Config.GithubClientID,
+				Csecret: s.Config.GithubSecret,
+			},
+
+			// Github Custom Handler Config
+			provider.CustomHandlerOpt{
+				Endpoint: oauth2.Endpoint{
+					AuthURL:  "https://github.com/login/oauth/authorize",
+					TokenURL: "https://github.com/login/oauth/access_token",
+				},
+				InfoURL: "https://api.github.com/user",
+				MapUserFn: func(data provider.UserData, _ []byte) token.User {
+					userInfo := token.User{
+						ID:      "github_" + token.HashID(sha1.New(), data.Value("name")),
+						Name:    data.Value("name"),
+						Picture: data.Value("avatar_url"),
+						Email:   data.Value("email"),
+					}
+					return userInfo
+				},
+				Scopes: []string{"user:email"},
+			},
+		)
 	}
 
 	if s.Config.GoogleEnabled {

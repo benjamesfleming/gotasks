@@ -19,7 +19,7 @@ export class User {
     }
 
     // Generate a new user from a given provider user
-    static fromProvider({ id, name, picture, attrs }) {
+    static fromProvider({ id, name, email, picture, attrs }) {
         return new User({
             id              : null,
             providerId      : id,
@@ -27,7 +27,7 @@ export class User {
             firstName       : split(name, ' ')[0],
             lastName        : split(name, ' ')[1],
             username        : replace(kebabCase(name), '-', ''),
-            email           : '',
+            email           : email,
             tasks           : [],
             isAdmin         : attrs['admin'],
             isRegistered    : attrs['registered'],
