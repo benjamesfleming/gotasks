@@ -1,5 +1,7 @@
 <script>
+import { onMount } from 'svelte'
 import * as moment from 'moment'
+import fitty from 'fitty'
 import fuzzyFilter from 'fuzzy-array-filter'
 import TaskModal from '~/components/DashboardTaskModal'
 import TaskTable from '~/components/DashboardTaskTable'
@@ -7,6 +9,11 @@ import { AuthObject as u } from '~/utils/auth'
 import { ShowTaskModal } from '~/store'
 
 u.loadTasks()
+
+onMount(() => {
+    fitty(document.querySelector('#user-info--full-name'))
+    fitty(document.querySelector('#user-info--email'))
+})
 
 let searchQuery = ''
 let searchOptions = {
@@ -31,8 +38,8 @@ let onTaskModalShow = () => {
     <div class="max-w-xs px-6">
         <img class="rounded-lg shadow-md mb-6 transition-all hover:shadow-lg" src="{$u.avatar+"?s=512"}" alt="{$u.fullName}'s Profile Picture"/>
         <div class="user-info">
-            <h1 class="text-4xl">{$u.fullName}</h1>
-            <p>{$u.email}</p>
+            <h1 id="user-info--full-name" class="text-4xl">{$u.fullName}</h1>
+            <p id="user-info--email">{$u.email}</p>
             <small>Joined {moment($u.createdAt).format('Do MMM YY')}</small>
         </div>
     </div>
