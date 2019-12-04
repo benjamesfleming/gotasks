@@ -18,6 +18,8 @@ func or(ctx *cli.Context, a, b string) string {
 }
 
 var _startFlags = []cli.Flag{
+	altsrc.NewStringFlag(&cli.StringFlag{Name: "env", Hidden: true}),
+
 	// Server Config
 	altsrc.NewStringFlag(&cli.StringFlag{Name: "server.port", Hidden: true}),
 	altsrc.NewStringFlag(&cli.StringFlag{Name: "server.bind", Hidden: true}),
@@ -60,6 +62,8 @@ var StartCommand = &cli.Command{
 	Before:   altsrc.InitInputSourceWithContext(_startFlags, altsrc.NewTomlSourceFromFlagFunc("config")),
 	Action: func(ctx *cli.Context) error {
 		opts := &app.ServerOptions{
+			Environment: or(ctx, "env", "production"),
+
 			// Server Config
 			HTTPPort:  or(ctx, "server.port", "3000"),
 			BindAddr:  or(ctx, "server.bind", "0.0.0.0"),
@@ -101,6 +105,7 @@ var StartCommand = &cli.Command{
 			s.DB.Close()
 		}()
 
+		s.Logger.Infof("ENV = %s", opts.Environment)
 		s.Logger.Infof("Starting Services")
 		return s.Start()
 	},

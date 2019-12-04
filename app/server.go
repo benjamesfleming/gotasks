@@ -29,6 +29,7 @@ import (
 
 // ServerOptions ...
 type ServerOptions struct {
+	Environment string
 
 	// Server Config
 	HTTPPort        string
@@ -224,6 +225,7 @@ func NewServer(opts *ServerOptions) *Server {
 				s.DB.Where(&models.User{ProviderID: nulls.NewString(tkn.ID)}).First(&user)
 			}
 
+			c.Set("Environment", s.Config.Environment)
 			c.Set("Database", s.DB)
 			c.Set("User", user)
 			c.Set("TemplatesBox", s.TemplateBox)
