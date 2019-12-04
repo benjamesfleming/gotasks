@@ -31,6 +31,10 @@
     &:hover {
         @apply shadow-lg opacity-75;
     }
+
+    &:not(:last-child) {
+        @apply mr-4;
+    }
 }
 
 .toolbar > .button {
