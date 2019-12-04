@@ -15,7 +15,7 @@ func main() {
 		Name:        "gotasks",
 		Usage:       "get stuff done",
 		Description: "A Task Tracker & Todo List",
-		HideVersion: true,
+		Version:     "v0.1.0",
 		Flags:       []cli.Flag{},
 		Commands: []*cli.Command{
 			InstallCommand,
