@@ -16,7 +16,7 @@ export let sortable = false
 
 let listEl = null
 
-$: if (listEl != null) {
+$: if (listEl != null && sortable) {
     let sortable = new Sortable(listEl, {
         draggable: '.sortable',
         handle: '.sortable-handle',
