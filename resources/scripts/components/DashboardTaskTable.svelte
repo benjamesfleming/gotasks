@@ -157,11 +157,11 @@ let onTaskEdit = id => {
     <div bind:this={listEl} class="sortable-list w-full overflow-hidden rounded shadow-md transition-all hover:shadow-lg">
         {#each $u.tasks.filter(filter).sort(sort) as task (task.id)}
             <div class="sortable opacity-75 hover:opacity-80" data-id={task.id}>
-                <div class="sortable-content flex justify-between items-center bg-gray-400 cursor-pointer" on:click={() => onToggleSteps(task.id)}>
-                    <div class="p-3 w-16">
+                <div class="sortable-content flex justify-between items-center bg-gray-400 cursor-pointer {$showSteps[task.id] && 'py-2'} transition-all" on:click={() => onToggleSteps(task.id)}>
+                    <div class="p-2 sm:p-3 w-16">
                         <CheckBox checked={task.isCompleted} on:change={() => onToggle(task.id)}/>
                     </div>
-                    <div class="p-3 flex-1">
+                    <div class="p-2 sm:p-3 flex-1">
                         <span>{task.title}</span>
                         <div class="flex flex-wrap">
                             {#each task.tags.split(',') as tag, idx}
@@ -169,14 +169,18 @@ let onTaskEdit = id => {
                             {/each}
                         </div>
                     </div>
-                    <div class="p-3 flex-1">
+                    <div class="p-2 sm:p-3 flex-1 hidden sm:block">
                         {task.isCompleted ? moment(task.completedAt).fromNow() : 'Incomplete'}
                     </div>
-                    <div class="p-3 pr-6 text-lg">
-                        {#if sortable == true}<i class="fas fa-sort text-gray-900 hover:text-gray-800 p-3 transition-all sortable-handle"></i>{/if}
-                        <i class="fas fa-chevron-circle-{$showSteps[task.id] ? 'up' : 'down'} ml-3 text-clip bg-gray-900 hover:bg-gray-800 active:bg-animate transition-all"></i>
-                        <i class="fas fa-pen-square ml-3 text-clip bg-gray-900 hover:bg-gray-800 active:bg-animate transition-all" on:click|stopPropagation={() => onTaskEdit(task.id)}></i>
-                        <i class="fas fa-trash ml-3 text-clip bg-gray-900 hover:bg-gray-800 active:bg-animate transition-all" on:click|stopPropagation={() => onTaskDelete(task.id)}></i>
+                    <div class="p-2 sm:p-3 pr-4 sm:pr-6 text-lg flex flex-col sm:flex-row"> 
+                        <div class="flex-1 flex justify-around {$showSteps[task.id] && 'mb-2 sm:mb-0'}">
+                            <i class="fas fa-sort {sortable ? 'text-gray-900 hover:text-gray-800 transition-all sortable-handle' : 'text-gray-500'} sm:ml-4"></i>
+                            <i class="fas fa-chevron-circle-{$showSteps[task.id] ? 'up' : 'down'} ml-3 sm:ml-4 text-clip bg-gray-900 hover:bg-gray-800 active:bg-animate transition-all"></i>
+                        </div>
+                        <div class="flex-1 justify-around {$showSteps[task.id] ? 'flex' : 'hidden sm:flex'}">
+                            <i class="fas fa-pen-square sm:ml-4 text-clip bg-gray-900 hover:bg-gray-800 active:bg-animate transition-all" on:click|stopPropagation={() => onTaskEdit(task.id)}></i>
+                            <i class="fas fa-trash ml-3 sm:ml-4 text-clip bg-gray-900 hover:bg-gray-800 active:bg-animate transition-all" on:click|stopPropagation={() => onTaskDelete(task.id)}></i>
+                        </div>
                     </div>
                 </div>
                 <div class="sortable-content step-list {$showSteps[task.id] ? 'max-h-full py-3' : 'max-h-0 py-0'} overflow-hidden transition-all bg-gray-300">
