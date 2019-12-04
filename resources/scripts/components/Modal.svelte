@@ -1,5 +1,6 @@
 <script>
 export let fadeIn = true
+export let style = ""
 </script>
 
 <style lang="postcss">
@@ -11,13 +12,13 @@ export let fadeIn = true
 .modal {
     width: 90%;
     max-width: 400px;
-    min-width: 320px;
+    min-width: 300px;
 }
 </style>
 
-<div class="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center overflow-y-auto">
-    <div class="overlay {fadeIn && 'animated fadeIn'} w-full h-full absolute bg-gray-800 z-40"></div>
-    <div class="modal animated bounceIn p-4 bg-white rounded-lg shadow-md z-50">
+<div class="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center overflow-y-auto" >
+    <div class="overlay {fadeIn && 'animated fadeIn'} w-full h-full fixed bg-gray-800 z-40"></div>
+    <div class="modal animated bounceIn p-4 bg-white rounded-lg shadow-md z-50 m-2" style={style}>
         <slot></slot>
     </div>
 </div>
