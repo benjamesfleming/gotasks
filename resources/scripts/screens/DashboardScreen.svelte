@@ -5,6 +5,7 @@ import fitty from 'fitty'
 import fuzzyFilter from 'fuzzy-array-filter'
 import TaskModal from '~/components/DashboardTaskModal'
 import TaskTable from '~/components/DashboardTaskTable'
+import WarningPanel from '~/components/WarningPanel'
 import { AuthObject as u } from '~/utils/auth'
 import { ShowTaskModal } from '~/store'
 
@@ -59,41 +60,21 @@ let onTaskModalShow = () => {
 
         {#if searchQuery != ''}
             <TaskTable filter={fuzzyFilter(searchQuery, searchOptions)} sort={(a, b) => moment(a.completedAt).isAfter(b.completedAt) ? 1 : -1}>
-                <div class="mx-auto p-12 flex items-center justify-center">
-                    <img class="max-w-md pl-6 pr-6 drop-shadow-md hover:drop-shadow-lg transition-all" src="/assets/images/undraw_imagination.svg" alt="Kiwi standing on oval">
-                    <p class="text-4xl max-w-xl text-center font-extrabold text-gray-800">
-                        NO TASKS FOUND. <br/> TRY A DIFFERENT SEARCH TERM
-                    </p>
-                </div>
+                <WarningPanel content="NO TASKS FOUND.<br/>TRY A DIFFERENT SEARCH TERM" image="/assets/images/undraw_imagination.svg"/>
             </TaskTable>
         {:else}
             {#if $u.tasks.length > 0}
                 <TaskTable filter={t => !t.isCompleted} sort={(a, b) => a.position > b.position ? 1 : -1} sortable>
-                    <div class="max-w-lg mx-auto py-12 flex items-center justify-center">
-                        <img class="max-w-xs pr-12 drop-shadow-md hover:drop-shadow-lg transition-all" src="/assets/images/undraw_completed.svg" alt="Kiwi standing on oval">
-                        <p class="text-3xl text-center font-extrabold text-gray-800">
-                            WOO-HOO!!!<br/>YOU ARE UP TO DATE
-                        </p>
-                    </div>
+                    <WarningPanel content="WOO-HOO!!!<br/>YOU ARE UP TO DATE" image="/assets/images/undraw_completed.svg"/>
                 </TaskTable>
 
                 <hr class="h-1 my-6 bg-gray-300 shadow-sm rounded"/>
 
                 <TaskTable filter={t => t.isCompleted} sort={(a, b) => moment(a.completedAt).isBefore(b.completedAt) ? 1 : -1}>
-                    <div class="max-w-lg mx-auto py-12 flex items-center justify-center">
-                        <img class="max-w-xs pr-12 drop-shadow-md hover:drop-shadow-lg transition-all" src="/assets/images/undraw_void.svg" alt="Kiwi standing on oval">
-                        <p class="text-3xl text-center font-extrabold text-gray-800">
-                            COMPLETE TASKS TO SEE THEM HERE
-                        </p>
-                    </div>
+                    <WarningPanel content="COMPLETE TASKS TO SEE THEM HERE" image="/assets/images/undraw_void.svg"/>
                 </TaskTable>
             {:else}
-                <div class="mx-auto p-12 flex items-center justify-center">
-                    <img class="max-w-md pl-6 pr-6 drop-shadow-md hover:drop-shadow-lg transition-all" src="/assets/images/undraw_progress_tracking.svg" alt="Kiwi standing on oval">
-                    <p class="text-4xl max-w-xl text-center font-extrabold text-gray-800">
-                        WHAT... NO TASKS?<br/> CREATE ONE TO GET STARTED
-                    </p>
-                </div>
+                <WarningPanel content="WHAT... NO TASKS?<br/>CREATE ONE TO GET STARTED" image="/assets/images/undraw_progress_tracking.svg"/>
             {/if}
         {/if}
     </div>
