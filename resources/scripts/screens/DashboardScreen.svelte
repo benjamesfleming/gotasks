@@ -13,7 +13,7 @@ u.loadTasks()
 
 onMount(() => {
     fitty(document.querySelector('#user-info--full-name'))
-    fitty(document.querySelector('#user-info--email'))
+    fitty(document.querySelector('#user-info--details'), { minSize: 12, maxSize: 17 })
 })
 
 let searchQuery = ''
@@ -32,22 +32,30 @@ let onTaskModalShow = () => {
 }
 </script>
 
+<style>
+#user-info--full-name:first-letter {
+   margin-left: -0.06em;
+}
+</style>
+
 <TaskModal />
 
-<div class="container mx-auto my-6">
+<div class="container mx-auto sm:my-6 flex flex-col sm:flex-row">
 
-    <div class="max-w-xs px-6">
-        <img class="rounded-lg shadow-md mb-6 transition-all hover:shadow-lg" src="{$u.avatar+"?s=512"}" alt="{$u.fullName}'s Profile Picture"/>
-        <div class="user-info">
-            <h1 id="user-info--full-name" class="text-4xl">{$u.fullName}</h1>
-            <p id="user-info--email">{$u.email}</p>
-            <small>Joined {moment($u.createdAt).format('Do MMM YY')}</small>
+    <div class="sm:max-w-xs flex sm:flex-col justify-between sm:justify-start px-4 sm:px-6 mb-4 sm:mb-0">
+        <img class="rounded shadow-md sm:mb-6 transition-all hover:shadow-lg w-1/3 sm:w-full" src="{$u.avatar+"?s=512"}" alt="{$u.fullName}'s Profile Picture"/>
+        <div class="user-info leading-snug sm:mx-0 w-3/5 sm:w-full">
+            <p id="user-info--full-name">{$u.fullName}</p>
+            <p id="user-info--details">
+                {$u.email} <br/>
+                Joined {moment($u.createdAt).format('Do MMM YY')}
+            </p>
         </div>
     </div>
 
-    <div class="w-full px-6">
+    <div class="w-full px-4 sm:px-6">
 
-        <div class="toolbar h-12 mb-6 flex justify-between">
+        <div class="toolbar h-10 sm:h-12 mb-4 sm:mb-6 flex justify-between">
             <div class="toolbar-input-group">
                 <span><input type="text" bind:value={searchQuery} /></span>
                 <i class="fas fa-search"></i>
@@ -68,7 +76,7 @@ let onTaskModalShow = () => {
                     <WarningPanel content="WOO-HOO!!!<br/>YOU ARE UP TO DATE" image="/assets/images/undraw_completed.svg"/>
                 </TaskTable>
 
-                <hr class="h-1 my-6 bg-gray-300 shadow-sm rounded"/>
+                <hr class="h-1 my-4 sm:my-6 bg-gray-300 shadow-sm rounded"/>
 
                 <TaskTable filter={t => t.isCompleted} sort={(a, b) => moment(a.completedAt).isBefore(b.completedAt) ? 1 : -1}>
                     <WarningPanel content="COMPLETE TASKS TO SEE THEM HERE" image="/assets/images/undraw_void.svg"/>
