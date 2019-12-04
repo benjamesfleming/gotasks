@@ -63,8 +63,8 @@ onMount(async function () {
 </script>
 
 {#if isLoading == false}
-    <Modal fadeIn={false}>
-        <img style="margin-top: -120px;" class="w-1/2 mx-auto mb-6 rounded-lg shadow-md hover:shadow-lg transition-all" src={avatar+"?s=200"} alt=""/>
+    <Modal fadeIn={false} style="margin-top: 50px;">
+        <img style="margin-top: -80px;" class="w-1/2 mx-auto mb-6 rounded shadow-md hover:shadow-lg transition-all" src={avatar+"?s=200"} alt=""/>
 
         <!-- 
             Modal Header
