@@ -7,12 +7,15 @@
 
   <title>GoTasks</title>
 
-  <link rel="stylesheet" href="/assets/bundle.css?v={{ . }}">
+  <link rel="stylesheet" href="/assets/bundle.css{{ .UniqueKey }}">
 </head>
 <body>
   
   <div id="app"></div>
   
-  <script src="/assets/bundle.js?v={{ . }}"></script>
+  {{ if (eq .Environment "development") }}
+  <script src="http://localhost:35729/livereload.js"></script>
+  {{ end }}
+  <script src="/assets/bundle.js{{ .UniqueKey }}"></script>
 </body>
 </html>

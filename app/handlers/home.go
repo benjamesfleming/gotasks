@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"html/template"
+	"strconv"
 	"time"
 
 	rice "github.com/GeertJohan/go.rice"
@@ -16,8 +17,17 @@ func HomeHandler(e echo.Context) error {
 		e.Get("TemplatesBox").(*rice.Box).MustString("index.html"),
 	)
 
-	var tpl bytes.Buffer
-	if err := t.Execute(&tpl, time.Now().Unix()); err != nil {
+	tpl := new(bytes.Buffer)
+	data := map[string]string{
+		"UniqueKey":   "?v=" + strconv.FormatInt(time.Now().Unix(), 10),
+		"Environment": e.Get("Environment").(string),
+	}
+
+	if data["Environment"] != "development" {
+		data["UniqueKey"] = ""
+	}
+
+	if err := t.Execute(tpl, data); err != nil {
 		e.Logger().Fatalf("Failed To Prase HTML Template, %s", err)
 		return e.String(500, "Failed To Parse The HTML Template")
 	}
