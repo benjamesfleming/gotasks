@@ -1,5 +1,5 @@
 # Global Config
-#   `env` the run mode ("development", "production") (default: "development")
+#   `env` the run mode ("development", "production") (default: "production")
 env = "production"
 
 # Server Config
