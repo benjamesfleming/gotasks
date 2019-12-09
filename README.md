@@ -10,6 +10,7 @@ View [CHANGELOG.md](./CHANGELOG.md) to keep updated on development.
 
 - [x] Responsive Mobile UI
 - [ ] Add Google OAuth Support
+- [ ] Add Custom OAuth Support
 - [ ] Add Repeating Tasks
 - [ ] Optimize API Calls 
 - [ ] Docker Containers
