@@ -12,8 +12,8 @@ import (
 
 // Task ...
 type Task struct {
-	ID          uuid.UUID `gorm:"type:uuid;primary_key;"`
-	UserID      uuid.UUID `gorm:"type:uuid;not null;"`
+	ID          uuid.UUID `gorm:"type:varchar(255);primary_key;"`
+	UserID      uuid.UUID `gorm:"type:varchar(255);not null;"`
 	Title       string
 	Tags        string
 	Note        string

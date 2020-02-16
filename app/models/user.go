@@ -12,7 +12,7 @@ import (
 
 // User ...
 type User struct {
-	ID         uuid.UUID `gorm:"type:uuid;primary_key;"`
+	ID         uuid.UUID `gorm:"type:varchar(255);primary_key;"`
 	ProviderID nulls.String
 	Avatar     string
 	Username   string `gorm:"size:32"`

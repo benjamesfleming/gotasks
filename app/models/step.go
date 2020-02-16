@@ -11,8 +11,8 @@ import (
 
 // Step ...
 type Step struct {
-	ID          uuid.UUID `gorm:"type:uuid;primary_key;"`
-	TaskID      uuid.UUID `gorm:"type:uuid;not null;"`
+	ID          uuid.UUID `gorm:"type:varchar(255);primary_key;"`
+	TaskID      uuid.UUID `gorm:"type:varchar(255);not null;"`
 	Title       string
 	Order       uint
 	CompletedAt nulls.Time
