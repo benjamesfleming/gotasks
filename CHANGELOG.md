@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1]
+### Fixed
+- Changed ID data type to `vaarchar(255)` for mysql compatibility
+
 ## [0.2.0]
 ### Added
 - [Gravatar](https://en.gravatar.com/) support for profile fallback image
@@ -25,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is the initial release with very basic functionality.
 I suggest following the install guide in the README to get started.
 
-[Unreleased]: https://github.com/benjamesfleming/gotasks/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/benjamesfleming/gotasks/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/benjamesfleming/gotasks/releases/tag/v0.2.1
 [0.2.0]: https://github.com/benjamesfleming/gotasks/releases/tag/v0.2.0
 [0.1.0]: https://github.com/benjamesfleming/gotasks/releases/tag/v0.1.0
