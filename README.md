@@ -20,7 +20,7 @@ View [CHANGELOG.md](./CHANGELOG.md) to keep updated on development.
 
 >**NOTE**: binaries are only provided for linux, follow the [Build From Source]() section to build for a different platform.
 
-The latest GoTasks binaries can be downloaded at [https://dl.benfleming.nz/gotasks](https://dl.benfleming.nz/gotasks). These are built for linux and will not work on other operation systems.
+The latest GoTasks binaries can be downloaded at [https://dl.benfleming.nz?prefix=/gotasks](https://dl.benfleming.nz?prefix=/gotasks). These are built for linux and will not work on other operation systems.
 
 Run the following commands as **root** user, or use **sudo** where needed.
 

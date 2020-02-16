@@ -12,12 +12,15 @@ env = "production"
 port = "3000"
 bind = "0.0.0.0"
 host = "http://127.0.0.1:3000"
-avatar-dir = "/avatars"
+avatar-dir = "./avatars"
 unique-key = "{{ . }}" # generated on install
 
 # Database Config
 #   `type` the type of database ("sqlite3", "mysql") (default: "sqlite3")
 #   `connection` the connection string of the database (default: "./database.db")
+#
+# IMPORTANT: When using `mysql` database the connection string must take the following format:
+#   "username:password@(host)/database?charset=utf8&parseTime=True&loc=Local"
 [database]
 type = "sqlite3"
 connection = "./database.db"
