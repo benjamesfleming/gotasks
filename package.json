@@ -13,7 +13,7 @@
     "fuzzy-array-filter": "^0.1.5",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.15",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "mudder": "^1.0.9",
     "svero": "^1.0.0",
     "sweetalert2": "^9.3.11"
